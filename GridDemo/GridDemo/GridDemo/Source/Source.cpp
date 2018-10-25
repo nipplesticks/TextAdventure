@@ -30,6 +30,9 @@ const char DOOR_OPEN = '/';
 const char GRASS = ',';
 const char FLOOR = '.';
 const char WATER = '~';
+const char NOTILE = ' ';
+const char ITEM = 'i';
+const char PLAYER = '@';
 
 void cls();
 void setCursorPosition(int x, int y);
@@ -38,12 +41,20 @@ struct Vec
 {
 	int x, y, z;
 
-	Vec operator+(const Vec & other)
+	Vec operator+(const Vec & other) const
 	{
 		Vec n;
 		n.x = x + other.x;
 		n.y = y + other.y;
 		n.z = z + other.z;
+		return n;
+	}
+	Vec operator-(const Vec & other) const
+	{
+		Vec n;
+		n.x = x - other.x;
+		n.y = y - other.y;
+		n.z = z - other.z;
 		return n;
 	}
 	bool operator==(const Vec & other) const
@@ -136,17 +147,32 @@ struct Render
 	{
 		drawQueue.push_back(d);
 	}
-	void Flush()
+	void Flush(Vec * camera, bool redrawAll = false)
 	{
 		static bool FIRST_DRAW = true;
 		
+		if (redrawAll)
+		{
+			for (int i = 0; i < screenSize.y; i++)
+			{
+				for (int k = 0; k < screenSize.x; k++)
+				{
+					screen[i * screenSize.x + k].spr = NOTILE;
+					screen[i * screenSize.x + k].pos.z = -10;
+				}
+			}
+		}
+
 		for (auto & d : drawQueue)
 		{
-			screen[d->pos.y * screenSize.x + d->pos.x] = *d;
+			Vec viewPos = d->pos - *camera;
+			if (viewPos.x >= 0 && viewPos.x < screenSize.x && 
+				viewPos.y >= 0 && viewPos.y < screenSize.y)
+				screen[viewPos.y * screenSize.x + viewPos.x] = *d;
 		}
-		if (FIRST_DRAW)
+		if (FIRST_DRAW || redrawAll)
 		{
-			FIRST_DRAW = FALSE;
+			FIRST_DRAW = false;
 			setCursorPosition(0, 0);
 			for (int i = 0; i < screenSize.y; i++)
 			{
@@ -167,8 +193,9 @@ struct Render
 					Drawable & target = screen[i * screenSize.x + k];
 					if (target.NeedRedraw)
 					{
+						Vec ViewPos = target.pos - *camera;
 						rlutil::setColor(target.color);
-						setCursorPosition(target.pos.x, target.pos.y);
+						setCursorPosition(ViewPos.x, ViewPos.y);
 						std::cout << target.spr;
 					}
 				}
@@ -179,23 +206,38 @@ struct Render
 	}
 };
 
-void LoadMap(const std::string & path, Map * map);
+Drawable LoadMap(const std::string & path, Map * map);
 Vec Move(Drawable & c, Map & map);
 void Interact(Drawable & c, Map & map, const Vec & dir);
+void InitWindow()
+{
+	CONSOLE_FONT_INFOEX cfi;
+	cfi.cbSize = sizeof(cfi);
+	cfi.nFont = 0;
+	cfi.dwFontSize.X = 0;                   // Width of each character in the font
+	cfi.dwFontSize.Y = 24;                  // Height
+	cfi.FontFamily = FF_DONTCARE;
+	cfi.FontWeight = FW_NORMAL;
+	//std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
+	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+	SendMessage(GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);
+	rlutil::saveDefaultColor();
+}
 
 int main()
 {
-	SendMessage(GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);
-	rlutil::saveDefaultColor();
+	InitWindow();
+
+	std::vector<Drawable> items;
+
 	Drawable c;
-	c.spr = '@';
-	c.color = RED;
-	c.pos = { 11, 8, 0 };
+	Vec camera = { 0, 0, 0 };
+
 	Render machine;
 	Map map;
-	LoadMap("Assets/Map.txt", &map);
-	machine.screenSize.x = map.mapSize.x;
-	machine.screenSize.y = map.mapSize.y;
+	c = LoadMap("Assets/Map.txt", &map);
+	machine.screenSize.x = 145;
+	machine.screenSize.y = 44;
 	machine.alloc();
 	
 	while (!GetAsyncKeyState(VK_ESCAPE))
@@ -203,21 +245,37 @@ int main()
 		bool reDraw = false;
 		//Update
 		Vec dir = Move(c, map);
+
+		// Move camera
+		bool redrawAll = false;
+		if (c.pos.x >= machine.screenSize.x + camera.x)
+		{
+			redrawAll = true;
+			camera.x += machine.screenSize.x;
+		}
+		else if (c.pos.x < camera.x)
+		{
+			redrawAll = true;
+			camera.x -= machine.screenSize.x;
+		}
+		if (c.pos.y >= machine.screenSize.y + camera.y)
+		{
+			redrawAll = true;
+			camera.y += machine.screenSize.y;
+		}
+		else if (c.pos.y < camera.y)
+		{
+			redrawAll = true;
+			camera.y -= machine.screenSize.y;
+		}
+
+
 		Interact(c, map, dir);
 		//Draw
 		map.Draw(&machine.drawQueue);
 		machine.Draw(&c);
-		machine.Flush();
+		machine.Flush(&camera, redrawAll);
 	}
-
-
-
-
-
-
-
-
-
 
 	map.Release();
 	machine.Release();
@@ -225,8 +283,9 @@ int main()
 	return 0;
 }
 
-void LoadMap(const std::string & path, Map * map)
+Drawable LoadMap(const std::string & path, Map * map)
 {
+	Drawable player;
 	map->Release();
 	
 	std::ifstream in;
@@ -243,6 +302,7 @@ void LoadMap(const std::string & path, Map * map)
 	{
 		for (int i = 0; i < map->mapSize.x; i++)
 		{
+			bool isMap = true;
 			int color = 7;
 			if (line[i] == GRASS)
 				color = GREEN;
@@ -254,14 +314,66 @@ void LoadMap(const std::string & path, Map * map)
 				color = LIGHT_PURPLE;
 			else if (line[i] == WATER)
 				color = AQUA;
+			else if (line[i] == ITEM)
+			{
+				color = YELLOW;
+				isMap = false;
+			}
+			else if (line[i] == PLAYER)
+			{
+				color = RED;
+				isMap = false;
+				player.pos.x = i;
+				player.pos.y = counter;
+				player.pos.z = 0;
+				player.spr = PLAYER;
+				player.color = color;
+			}
 
-			map->map[counter * map->mapSize.x + i].spr = line[i];
-			map->map[counter * map->mapSize.x + i].color = color;
+			if (isMap)
+			{
+				map->map[counter * map->mapSize.x + i].spr = line[i];
+				map->map[counter * map->mapSize.x + i].color = color;
+			}
+			else
+			{
+				if (counter > 0 && counter < map->mapSize.y - 1 && i > 0 && i < map->mapSize.x - 1)
+				{
+					char around[4];
+					around[0]	= map->map[(counter + 1) * map->mapSize.x + i].spr;
+					around[1]	= map->map[(counter - 1) * map->mapSize.x + i].spr;
+					around[2]	= map->map[counter * map->mapSize.x + i + 1].spr;
+					around[3]	= map->map[counter * map->mapSize.x + i - 1].spr;
+
+					int floor = 0;
+					int grass = 0;
+					for (int a = 0; a < 4; a++)
+					{
+						if (around[a] == FLOOR)
+							floor++;
+						else if (around[a] == GRASS)
+							grass++;
+
+						if (grass > floor)
+						{
+							map->map[counter * map->mapSize.x + i].spr = ',';
+							map->map[counter * map->mapSize.x + i].color = GREEN;
+						}
+						else
+						{
+							map->map[counter * map->mapSize.x + i].spr = '.';
+							map->map[counter * map->mapSize.x + i].color = WHITE;
+						}
+					}
+
+				}
+			}
 		}
 		counter++;
 	}
 
 	in.close();
+	return player;
 }
 
 Vec Move(Drawable & c, Map & map)
@@ -387,7 +499,6 @@ void cls()
 	// Move the cursor back to the top left for the next sequence of writes
 	SetConsoleCursorPosition(hOut, topLeft);
 }
-
 void setCursorPosition(int x, int y)
 {
 	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
