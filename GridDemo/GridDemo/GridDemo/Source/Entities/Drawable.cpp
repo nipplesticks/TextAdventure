@@ -5,6 +5,7 @@ Drawable::Drawable()
 	m_spr = Sprite::NOTILE;
 	m_pos = { 0,0,-10 };
 	m_color = Color::BLACK;
+	m_needsRedraw = true;
 }
 
 Drawable::~Drawable()
@@ -42,6 +43,16 @@ void Drawable::setPosition(Vec pos)
 Vec Drawable::getPosition() const
 {
 	return m_pos;
+}
+
+void Drawable::setRedrawState(bool state)
+{
+	m_needsRedraw = state;
+}
+
+bool Drawable::inNeedOfRedraw() const
+{
+	return m_needsRedraw;
 }
 
 void Drawable::Draw(std::vector<Drawable*>* dq)

@@ -10,6 +10,7 @@ private:
 	char m_spr;
 	Vec m_pos;
 	int m_color;
+	bool m_needsRedraw;
 
 public:
 	Drawable();
@@ -23,6 +24,9 @@ public:
 
 	virtual void setPosition(Vec pos);
 	virtual Vec getPosition() const;
+
+	virtual void setRedrawState(bool state);
+	virtual bool inNeedOfRedraw() const;
 
 	virtual void Draw(std::vector<Drawable*> * dq);
 };

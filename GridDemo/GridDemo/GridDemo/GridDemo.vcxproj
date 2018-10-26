@@ -123,6 +123,7 @@
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Camera.h" />
     <ClInclude Include="Source\Entities\Character.h" />
     <ClInclude Include="Source\Entities\Drawable.h" />
     <ClInclude Include="Source\Help_Headers\Colors.h" />
@@ -130,6 +131,7 @@
     <ClInclude Include="Source\Help_Headers\Sprites.h" />
     <ClInclude Include="Source\Help_Headers\Structs.h" />
     <ClInclude Include="Source\Help_Headers\Timer.h" />
+    <ClInclude Include="Source\MapStuff\Map.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

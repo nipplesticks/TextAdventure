@@ -7,41 +7,12 @@
 #include "Help_Headers/rlutil.h"
 #include "Help_Headers/Colors.h"
 #include "Help_Headers/Sprites.h"
+#include "Help_Headers/Structs.h"
 #pragma comment(lib, "user32")
 
 void cls();
 void setCursorPosition(int x, int y);
 
-struct Vec
-{
-	int x, y, z;
-
-	Vec operator+(const Vec & other) const
-	{
-		Vec n;
-		n.x = x + other.x;
-		n.y = y + other.y;
-		n.z = z + other.z;
-		return n;
-	}
-	Vec operator-(const Vec & other) const
-	{
-		Vec n;
-		n.x = x - other.x;
-		n.y = y - other.y;
-		n.z = z - other.z;
-		return n;
-	}
-	bool operator==(const Vec & other) const
-	{
-		return x == other.x && y == other.y && z == other.z;
-	}
-	bool operator!=(const Vec & other) const
-	{
-		return x != other.x || y != other.y || z != other.z;
-	}
-
-};
 struct Drawable
 {
 	char spr = ' ';
