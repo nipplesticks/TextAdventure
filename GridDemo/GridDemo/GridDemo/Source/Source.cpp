@@ -2,37 +2,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "Timer.h"
+#include "Help_Headers/Timer.h"
 #include <stdlib.h>
-#include "rlutil.h"
+#include "Help_Headers/rlutil.h"
+#include "Help_Headers/Colors.h"
+#include "Help_Headers/Sprites.h"
 #pragma comment(lib, "user32")
-
-const int BLACK = 0;
-const int BLUE = 1;
-const int GREEN = 2;
-const int AQUA = 3;
-const int RED = 4;
-const int PURPLE = 5;
-const int YELLOW = 6;
-const int WHITE = 7;
-const int GRAY = 8;
-const int LIGHT_BLUE = 9;
-const int LIGHT_GREEN = 10;
-const int LIGHT_AQUA = 11;
-const int LIGHT_RED = 12;
-const int LIGHT_PURPLE = 13;
-const int LIGHT_YELLOW = 14;
-const int LIGHT_WHITE = 15;
-
-const char WALL = '#';
-const char DOOR_CLOSED = '=';
-const char DOOR_OPEN = '/';
-const char GRASS = ',';
-const char FLOOR = '.';
-const char WATER = '~';
-const char NOTILE = ' ';
-const char ITEM = 'i';
-const char PLAYER = '@';
 
 void cls();
 void setCursorPosition(int x, int y);
@@ -157,7 +132,7 @@ struct Render
 			{
 				for (int k = 0; k < screenSize.x; k++)
 				{
-					screen[i * screenSize.x + k].spr = NOTILE;
+					screen[i * screenSize.x + k].spr = Sprite::NOTILE;
 					screen[i * screenSize.x + k].pos.z = -10;
 				}
 			}
@@ -304,29 +279,29 @@ Drawable LoadMap(const std::string & path, Map * map)
 		{
 			bool isMap = true;
 			int color = 7;
-			if (line[i] == GRASS)
-				color = GREEN;
-			else if (line[i] == WALL)
-				color = PURPLE;
-			else if (line[i] == FLOOR)
-				color = WHITE;
-			else if (line[i] == DOOR_CLOSED || line[i] == DOOR_OPEN)
-				color = LIGHT_PURPLE;
-			else if (line[i] == WATER)
-				color = AQUA;
-			else if (line[i] == ITEM)
+			if (line[i] == Sprite::GRASS)
+				color = Color::GREEN;
+			else if (line[i] == Sprite::WALL)
+				color = Color::PURPLE;
+			else if (line[i] == Sprite::FLOOR)
+				color = Color::WHITE;
+			else if (line[i] == Sprite::DOOR_CLOSED || line[i] == Sprite::DOOR_OPEN)
+				color = Color::LIGHT_PURPLE;
+			else if (line[i] == Sprite::WATER)
+				color = Color::AQUA;
+			else if (line[i] == Sprite::ITEM)
 			{
-				color = YELLOW;
+				color = Color::YELLOW;
 				isMap = false;
 			}
-			else if (line[i] == PLAYER)
+			else if (line[i] == Sprite::PLAYER)
 			{
-				color = RED;
+				color = Color::RED;
 				isMap = false;
 				player.pos.x = i;
 				player.pos.y = counter;
 				player.pos.z = 0;
-				player.spr = PLAYER;
+				player.spr = Sprite::PLAYER;
 				player.color = color;
 			}
 
@@ -349,20 +324,20 @@ Drawable LoadMap(const std::string & path, Map * map)
 					int grass = 0;
 					for (int a = 0; a < 4; a++)
 					{
-						if (around[a] == FLOOR)
+						if (around[a] == Sprite::FLOOR)
 							floor++;
-						else if (around[a] == GRASS)
+						else if (around[a] == Sprite::GRASS)
 							grass++;
 
 						if (grass > floor)
 						{
 							map->map[counter * map->mapSize.x + i].spr = ',';
-							map->map[counter * map->mapSize.x + i].color = GREEN;
+							map->map[counter * map->mapSize.x + i].color = Color::GREEN;
 						}
 						else
 						{
 							map->map[counter * map->mapSize.x + i].spr = '.';
-							map->map[counter * map->mapSize.x + i].color = WHITE;
+							map->map[counter * map->mapSize.x + i].color = Color::WHITE;
 						}
 					}
 
@@ -415,7 +390,7 @@ Vec Move(Drawable & c, Map & map)
 		if (newPos.x >= 0 && newPos.x < map.mapSize.x && newPos.y >= 0 && newPos.y < map.mapSize.y)
 		{
 			char type = map.map[newPos.y * map.mapSize.x + newPos.x].spr;
-			if (type != WALL && type != DOOR_CLOSED && type != WATER)
+			if (type != Sprite::WALL && type != Sprite::DOOR_CLOSED && type != Sprite::WATER)
 			{
 				map.map[c.pos.y * map.mapSize.x + c.pos.x].NeedRedraw = true;
 				c.pos = newPos;
@@ -447,14 +422,14 @@ void Interact(Drawable & c, Map & map, const Vec & dir)
 		if (InterActAt.x >= 0 && InterActAt.x < map.mapSize.x && InterActAt.y >= 0 && InterActAt.y < map.mapSize.y)
 		{
 			char type = map.map[InterActAt.y * map.mapSize.x + InterActAt.x].spr;
-			if (type == DOOR_CLOSED)
+			if (type == Sprite::DOOR_CLOSED)
 			{
-				map.map[InterActAt.y * map.mapSize.x + InterActAt.x].spr = DOOR_OPEN;
+				map.map[InterActAt.y * map.mapSize.x + InterActAt.x].spr = Sprite::DOOR_OPEN;
 				map.map[InterActAt.y * map.mapSize.x + InterActAt.x].NeedRedraw = true;
 			}
-			else if (type == DOOR_OPEN)
+			else if (type == Sprite::DOOR_OPEN)
 			{
-				map.map[InterActAt.y * map.mapSize.x + InterActAt.x].spr = DOOR_CLOSED;
+				map.map[InterActAt.y * map.mapSize.x + InterActAt.x].spr = Sprite::DOOR_CLOSED;
 				map.map[InterActAt.y * map.mapSize.x + InterActAt.x].NeedRedraw = true;
 			}
 		}

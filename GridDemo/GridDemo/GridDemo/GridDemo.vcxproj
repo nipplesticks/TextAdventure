@@ -118,11 +118,18 @@
     <Text Include="Assets\Map.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Entities\Character.cpp" />
+    <ClCompile Include="Source\Entities\Drawable.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\rlutil.h" />
-    <ClInclude Include="Source\Timer.h" />
+    <ClInclude Include="Source\Entities\Character.h" />
+    <ClInclude Include="Source\Entities\Drawable.h" />
+    <ClInclude Include="Source\Help_Headers\Colors.h" />
+    <ClInclude Include="Source\Help_Headers\rlutil.h" />
+    <ClInclude Include="Source\Help_Headers\Sprites.h" />
+    <ClInclude Include="Source\Help_Headers\Structs.h" />
+    <ClInclude Include="Source\Help_Headers\Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
