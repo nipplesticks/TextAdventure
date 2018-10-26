@@ -28,5 +28,5 @@ public:
 	virtual void setRedrawState(bool state);
 	virtual bool inNeedOfRedraw() const;
 
-	virtual void Draw(std::vector<Drawable*> * dq);
+	virtual void Draw();
 };

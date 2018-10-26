@@ -1,4 +1,5 @@
 #include "Drawable.h"
+#include "../Engine/Extern.h"
 
 Drawable::Drawable()
 {
@@ -55,7 +56,7 @@ bool Drawable::inNeedOfRedraw() const
 	return m_needsRedraw;
 }
 
-void Drawable::Draw(std::vector<Drawable*>* dq)
+void Drawable::Draw()
 {
-	dq->push_back(this);
+	EXT::g_drawQueue.push_back(this);
 }

@@ -21,10 +21,13 @@
     <ClCompile Include="Source\Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Entities\Character.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Entities\Drawable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Character.cpp">
+    <ClCompile Include="Source\Engine\Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,6 +47,9 @@
     <ClInclude Include="Source\Help_Headers\Sprites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Entities\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -53,7 +59,10 @@
     <ClInclude Include="Source\MapStuff\Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Camera.h">
+    <ClInclude Include="Source\Engine\Render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Extern.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

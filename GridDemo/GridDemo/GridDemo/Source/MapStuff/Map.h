@@ -16,7 +16,7 @@ public:
 
 	const Vec & getSize() const;
 
-	void Draw(std::vector<Drawable*> * dq);
+	void Draw();
 private:
 	void _cleanup();
 	void _copy(const Map & other);

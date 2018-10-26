@@ -29,3 +29,8 @@ struct Vec
 		return x != other.x || y != other.y || z != other.z;
 	}
 };
+
+struct Quad
+{
+	int top, left, width, height;
+};
