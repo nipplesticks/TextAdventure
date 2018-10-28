@@ -17,6 +17,7 @@ void Player::ToggleInventoryDraw()
 
 void Player::Draw()
 {
+	Drawable::Draw();
 	if (m_drawInventory)
 		m_inventory.Draw();
 }

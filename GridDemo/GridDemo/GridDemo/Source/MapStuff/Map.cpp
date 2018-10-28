@@ -80,6 +80,23 @@ void Map::Loadmap(const std::string & path, Player * player)
 	}
 }
 
+void Map::Move(Character * c)
+{
+	Vec pos = c->getInteractDirection();
+	Vec move = c->getMoveRequest();
+	Vec newPos = pos + move;
+	if (newPos.x >= 0 && newPos.y >= 0 && newPos.x < m_sizeOfMap.x && newPos.y < m_sizeOfMap.y)
+	{
+		char type = m_map[newPos.y * m_sizeOfMap.x + newPos.x].getSprite();
+		if (type != Sprite::DOOR_CLOSED && type != Sprite::NOTILE && type != Sprite::WALL && Sprite::WATER)
+		{
+			c->setPosition(newPos);
+			c->setRedrawState(true);
+			m_map[newPos.y * m_sizeOfMap.x + newPos.x].setRedrawState(true);
+		}
+	}
+}
+
 const Vec & Map::getSize() const
 {
 	return m_sizeOfMap;

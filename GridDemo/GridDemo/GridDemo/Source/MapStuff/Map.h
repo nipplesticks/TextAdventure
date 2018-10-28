@@ -15,6 +15,7 @@ public:
 	~Map();
 
 	void Loadmap(const std::string & path, Player * player);
+	void Move(Character * c);
 
 	const Vec & getSize() const;
 
