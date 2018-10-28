@@ -58,7 +58,11 @@ void Map::Loadmap(const std::string & path, Player * player)
 					color = Color::PURPLE;
 				else if (line[x] == Sprite::ITEM)
 				{
-					// Insert Item
+					Item i;
+					i.setSprite(Sprite::ITEM);
+					i.setPosition(Vec{ x, y, 0 });
+					i.setColor(Color::YELLOW);
+					m_items.push_back(i);
 				}
 				else if (line[x] == Sprite::PLAYER)
 				{
@@ -80,19 +84,71 @@ void Map::Loadmap(const std::string & path, Player * player)
 	}
 }
 
-void Map::Move(Character * c)
+void Map::InteractionMap(Character * c)
 {
-	Vec pos = c->getInteractDirection();
-	Vec move = c->getMoveRequest();
-	Vec newPos = pos + move;
-	if (newPos.x >= 0 && newPos.y >= 0 && newPos.x < m_sizeOfMap.x && newPos.y < m_sizeOfMap.y)
+	if (c->isInteracting())
 	{
-		char type = m_map[newPos.y * m_sizeOfMap.x + newPos.x].getSprite();
-		if (type != Sprite::DOOR_CLOSED && type != Sprite::NOTILE && type != Sprite::WALL && Sprite::WATER)
+		Vec pos = c->getPosition();
+		Vec dir = c->getInteractDirection();
+		Vec interactPos = pos + dir;
+		if (interactPos.x >= 0 && interactPos.y >= 0 && interactPos.x < m_sizeOfMap.x && interactPos.y < m_sizeOfMap.y)
 		{
-			c->setPosition(newPos);
-			c->setRedrawState(true);
-			m_map[newPos.y * m_sizeOfMap.x + newPos.x].setRedrawState(true);
+			char type = m_map[interactPos.y * m_sizeOfMap.x + interactPos.x].getSprite();
+			if (type == Sprite::DOOR_CLOSED)
+			{
+				m_map[interactPos.y * m_sizeOfMap.x + interactPos.x].setRedrawState(true);
+				m_map[interactPos.y * m_sizeOfMap.x + interactPos.x].setSprite(Sprite::DOOR_OPEN);
+			}
+			else if (type == Sprite::DOOR_OPEN)
+			{
+				m_map[interactPos.y * m_sizeOfMap.x + interactPos.x].setRedrawState(true);
+				m_map[interactPos.y * m_sizeOfMap.x + interactPos.x].setSprite(Sprite::DOOR_CLOSED);
+			}
+			else
+			{
+				bool found = false;
+				int at = -1;
+				for (int i = 0; i < m_items.size() && !found; i++)
+				{
+					if (interactPos.x == m_items[i].getPosition().x && interactPos.y == m_items[i].getPosition().y)
+					{
+						found = true;
+						at = i;
+					}
+				}
+
+				if (found)
+				{
+					Vec itemPos = m_items[at].getPosition();
+					m_items.erase(m_items.begin() + at);
+					m_map[itemPos.y * m_sizeOfMap.x + itemPos.x].setRedrawState(true);
+				}
+
+			}
+		}
+	}
+
+	Vec pos = c->getPosition();
+	Vec move = c->getMoveRequest();
+	if (move.x != 0 || move.y != 0)
+	{
+		Vec newPos = pos + move;
+		if (newPos.x >= 0 && newPos.y >= 0 && newPos.x < m_sizeOfMap.x && newPos.y < m_sizeOfMap.y)
+		{
+			char type = m_map[newPos.y * m_sizeOfMap.x + newPos.x].getSprite();
+			bool canMove = true;
+			for (auto & i : m_items)
+			{
+				if (newPos.x == i.getPosition().x && newPos.y == i.getPosition().y)
+				{
+					canMove = false;
+				}
+			}
+			if (canMove && type != Sprite::DOOR_CLOSED && type != Sprite::NOTILE && type != Sprite::WALL && type != Sprite::WATER)
+			{
+				m_map[pos.y * m_sizeOfMap.x + pos.x].setRedrawState(true);
+				c->MoveRequest(move);
+			}
 		}
 	}
 }
@@ -107,6 +163,9 @@ void Map::Draw()
 	for (int i = 0; i < m_sizeOfMap.x; i++)
 		for (int k = 0; k < m_sizeOfMap.y; k++)
 			m_map[k * m_sizeOfMap.x + i].Draw();
+
+	for (auto & i : m_items)
+		i.Draw();
 }
 
 Map & Map::operator=(const Map & other)

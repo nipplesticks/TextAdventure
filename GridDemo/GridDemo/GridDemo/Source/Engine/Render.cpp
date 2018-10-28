@@ -42,6 +42,12 @@ void Render::Resize(Quad viewPort)
 
 void Render::Flush(const Camera & cam, bool forceRedraw)
 {
+	if (forceRedraw)
+	{
+		_cls();
+		
+	}
+
 	for (auto & d : EXT::g_drawQueue)
 	{
 		Vec viewPos = d->getPosition() - cam.getPosition();
@@ -64,6 +70,7 @@ void Render::Flush(const Camera & cam, bool forceRedraw)
 				rlutil::setColor(target.getColor());
 				_setTarget(screenPos.x, screenPos.y);
 				std::cout << target.getSprite();
+				_setTarget(m_viewPort.left + m_viewPort.width, m_viewPort.top + m_viewPort.height);
 			}
 		}
 	}
@@ -102,7 +109,7 @@ void Render::_setTarget(const int & x, const int & y)
 
 void Render::_cls()
 {
-	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	/*static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	COORD topLeft = { 0, 0 };
@@ -116,5 +123,12 @@ void Render::_cls()
 	FillConsoleOutputCharacter(hOut, TEXT(' '), length, topLeft, &written);
 	FillConsoleOutputAttribute(hOut, csbi.wAttributes, length, topLeft, &written);
 
-	SetConsoleCursorPosition(hOut, topLeft);
+	SetConsoleCursorPosition(hOut, topLeft);*/
+
+	for (int i = 0; i < m_size.x; i++)
+		for (int k = 0; k < m_size.y; k++)
+		{
+			m_renderTarget[k * m_size.x + i] = Drawable(Sprite::NOTILE, Vec{ i, k, -10 }, Color::BLACK);
+			m_renderTarget[k * m_size.x + i].setRedrawState(false);
+		}
 }

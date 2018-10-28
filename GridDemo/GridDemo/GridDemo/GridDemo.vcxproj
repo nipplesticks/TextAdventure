@@ -124,6 +124,7 @@
     <ClInclude Include="Source\Entities\Character.h" />
     <ClInclude Include="Source\Entities\Drawable.h" />
     <ClInclude Include="Source\Entities\Inventory.h" />
+    <ClInclude Include="Source\Entities\Item.h" />
     <ClInclude Include="Source\Entities\Player.h" />
     <ClInclude Include="Source\Help_Headers\Colors.h" />
     <ClInclude Include="Source\Help_Headers\rlutil.h" />
@@ -138,6 +139,7 @@
     <ClCompile Include="Source\Entities\Character.cpp" />
     <ClCompile Include="Source\Entities\Drawable.cpp" />
     <ClCompile Include="Source\Entities\Inventory.cpp" />
+    <ClCompile Include="Source\Entities\Item.cpp" />
     <ClCompile Include="Source\Entities\Player.cpp" />
     <ClCompile Include="Source\MapStuff\Map.cpp" />
     <ClCompile Include="Source\Source.cpp" />

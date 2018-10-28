@@ -6,9 +6,10 @@ Character::Character() : Drawable()
 	m_hp = m_maxHP;
 	m_moveRequest = { 0,0,0 };
 	m_interactDir = { 0,0,0 };
+	m_interactRequest = false;
 }
 
-void Character::Move(Vec dir)
+void Character::MoveRequest(Vec dir)
 {
 	m_interactDir = dir;
 	m_moveRequest = dir;
@@ -28,6 +29,16 @@ Vec Character::getInteractDirection()
 	return m_interactDir;
 }
 
+void Character::InteractRequest(bool req)
+{
+	m_interactRequest = req;
+}
+
+bool Character::isInteracting() const
+{
+	return m_interactRequest;
+}
+
 void Character::setMaxHp(int maxHP)
 {
 	m_maxHP = maxHP;
@@ -38,6 +49,15 @@ void Character::setMaxHp(int maxHP)
 int Character::getMaxHP() const
 {
 	return m_maxHP;
+}
+
+void Character::Move()
+{
+	if (m_moveRequest.x != 0 || m_moveRequest.y != 0)
+	{
+		setPosition(getPosition() + getMoveRequest());
+		setRedrawState(true);
+	}
 }
 
 void Character::setHP(int hp)
