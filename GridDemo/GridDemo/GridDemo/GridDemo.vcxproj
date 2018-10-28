@@ -118,23 +118,29 @@
     <Text Include="Assets\Map.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Engine\Render.cpp" />
-    <ClCompile Include="Source\Entities\Character.cpp" />
-    <ClCompile Include="Source\Entities\Drawable.cpp" />
-    <ClCompile Include="Source\Source.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Source\Engine\Camera.h" />
     <ClInclude Include="Source\Engine\Extern.h" />
     <ClInclude Include="Source\Engine\Render.h" />
     <ClInclude Include="Source\Entities\Character.h" />
     <ClInclude Include="Source\Entities\Drawable.h" />
+    <ClInclude Include="Source\Entities\Inventory.h" />
+    <ClInclude Include="Source\Entities\Player.h" />
     <ClInclude Include="Source\Help_Headers\Colors.h" />
     <ClInclude Include="Source\Help_Headers\rlutil.h" />
     <ClInclude Include="Source\Help_Headers\Sprites.h" />
     <ClInclude Include="Source\Help_Headers\Structs.h" />
     <ClInclude Include="Source\Help_Headers\Timer.h" />
     <ClInclude Include="Source\MapStuff\Map.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Engine\Camera.cpp" />
+    <ClCompile Include="Source\Engine\Render.cpp" />
+    <ClCompile Include="Source\Entities\Character.cpp" />
+    <ClCompile Include="Source\Entities\Drawable.cpp" />
+    <ClCompile Include="Source\Entities\Inventory.cpp" />
+    <ClCompile Include="Source\Entities\Player.cpp" />
+    <ClCompile Include="Source\MapStuff\Map.cpp" />
+    <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,7 +12,7 @@ public:
 	Render();
 	void Init(Quad viewport);
 	void Resize(Quad viewPort);
-	void Flush(const Camera & cam);
+	void Flush(const Camera & cam, bool forceRedraw = false);
 	void Clear();
 private:
 	void _cleanup();

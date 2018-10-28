@@ -1,6 +1,6 @@
 #include "Character.h"
 
-Character::Character()
+Character::Character() : Drawable()
 {
 	m_maxHP = 100;
 	m_hp = m_maxHP;

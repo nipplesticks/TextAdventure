@@ -9,6 +9,14 @@ Drawable::Drawable()
 	m_needsRedraw = true;
 }
 
+Drawable::Drawable(char spr, Vec pos, int color)
+{
+	m_spr = spr;
+	m_pos = pos;
+	m_color = color;
+	m_needsRedraw = true;
+}
+
 Drawable::~Drawable()
 {
 	m_spr = Sprite::NOTILE;
@@ -51,7 +59,7 @@ void Drawable::setRedrawState(bool state)
 	m_needsRedraw = state;
 }
 
-bool Drawable::inNeedOfRedraw() const
+bool Drawable::isInNeedOfRedraw() const
 {
 	return m_needsRedraw;
 }

@@ -11,5 +11,5 @@ public:
 	~Camera();
 
 	void setPosition(const Vec & position);
-	Vec getPosition() const;
+	const Vec & getPosition() const;
 };

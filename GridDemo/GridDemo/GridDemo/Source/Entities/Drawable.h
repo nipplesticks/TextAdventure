@@ -14,6 +14,7 @@ private:
 
 public:
 	Drawable();
+	Drawable(char spr, Vec pos, int color);
 	virtual ~Drawable();
 
 	virtual void setSprite(char spr);
@@ -26,7 +27,7 @@ public:
 	virtual Vec getPosition() const;
 
 	virtual void setRedrawState(bool state);
-	virtual bool inNeedOfRedraw() const;
+	virtual bool isInNeedOfRedraw() const;
 
 	virtual void Draw();
 };

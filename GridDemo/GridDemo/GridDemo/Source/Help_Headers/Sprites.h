@@ -11,4 +11,5 @@ namespace Sprite
 	const char NOTILE = ' ';
 	const char ITEM = 'i';
 	const char PLAYER = '@';
+	const char BORDER = '+';
 }
