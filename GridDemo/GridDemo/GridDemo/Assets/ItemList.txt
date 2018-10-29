@@ -1,5 +1,5 @@
-0 Wooden_Sword 2 9 0 2 0 0 0 8
-1 Wooden_Shield 2 10 0 0 0 5 0 8
-2 Ugly_Sandals 2 7 0 0 0 1 0 8
-3 Basic_Shorts 2 5 0 0 0 1 0 8
-4 Health_Potion 1 0 5 0 0 0 0 7
+0 Wooden_Sword 2 7 0 2 0 0 0 8
+1 Wooden_Shield 2 8 0 0 0 5 0 8
+2 Ugly_Sandals 2 6 0 0 0 1 0 8
+3 Basic_Shorts 2 4 0 0 0 1 0 8
+4 Health_Potion 1 9 5 0 0 0 0 7

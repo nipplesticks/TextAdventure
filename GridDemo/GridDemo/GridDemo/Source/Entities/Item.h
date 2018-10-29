@@ -15,20 +15,20 @@ public:
 
 	enum Equippable
 	{
-		NONE = 0,
-		Helmet = 1,
-		Shoulders = 2,
-		Chest = 3,
-		Waist = 4,
-		Lederhosen = 5, // Pants
-		Gloves = 6,
-		Boots = 7,
-		Melee_Weapon = 8,
-		Ranged_Weapon = 9,
-		Shield = 10
+		Helmet			= 0,
+		Shoulders		= 1,
+		Chest			= 2,
+		Waist			= 3,
+		Lederhosen		= 4, // Pants
+		Gloves			= 5,
+		Boots			= 6,
+		Melee_Weapon	= 7,
+		Ranged_Weapon	= 7,
+		Shield			= 8,
+		NONE			= 9
 	};
 
-	struct Type
+	struct ItemDesc
 	{
 		ItemType type = Trash;
 		Equippable equipType = NONE;
@@ -38,11 +38,11 @@ public:
 private:
 	std::string m_name;
 	Stats m_stats;
-	Type m_type;
+	ItemDesc m_type;
 public:
-	Item(Type t = {Trash, NONE});
-	void setType(const Type & t);
-	const Type & getType() const;
+	Item(ItemDesc t = {Trash, NONE, Color::GRAY});
+	void setType(const ItemDesc & t);
+	const ItemDesc & getType() const;
 
 	void setName(const std::string & name);
 	const std::string & getName() const;

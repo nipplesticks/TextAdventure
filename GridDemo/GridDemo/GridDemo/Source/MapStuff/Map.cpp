@@ -95,7 +95,7 @@ void Map::Loadmap(const std::string & path, Player * player)
 
 	for (int i = 0; i < m_items.size(); i++)
 	{
-		Item::Type t;
+		Item::ItemDesc t;
 		Stats s;
 		std::stringstream ss = _loadItem(itemId[i]);
 		std::string name = "";

@@ -1,17 +1,17 @@
 #include "Item.h"
 
-Item::Item(Type t) : Drawable()
+Item::Item(ItemDesc t) : Drawable()
 {
 	m_name = "";
 	m_type = t;
 }
 
-void Item::setType(const Type & t)
+void Item::setType(const ItemDesc & t)
 {
 	m_type = t;
 }
 
-const Item::Type & Item::getType() const
+const Item::ItemDesc & Item::getType() const
 {
 	return m_type;
 }

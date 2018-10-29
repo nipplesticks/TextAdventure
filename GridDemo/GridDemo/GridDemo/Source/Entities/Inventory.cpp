@@ -6,6 +6,10 @@ Inventory::Inventory()
 	m_settings = { 0,0,0,0 };
 	m_nrOfItems = 0;
 	m_selection = -1;
+	for (int i = 0; i < 8; i++)
+	{
+		m_isEquipped[i] = false;
+	}
 }
 
 void Inventory::Init(Quad settings)
@@ -61,14 +65,95 @@ void Inventory::MoveSelection(const Vec & dir)
 		if (dir.x < 0)
 			d *= -1;
 
+		int lastSel = m_selection;
 		m_selection += (MAX_ITEMS / 2) * dir.x;
 		m_selection += dir.y;
 		if (m_selection >= m_nrOfItems)
-			m_selection = m_nrOfItems - 1;
+			m_selection = lastSel;
 		else if (m_selection < 0)
-			m_selection = 0;
+			m_selection = lastSel;
 		_updateSelection();
 	}
+}
+
+Stats Inventory::UseItem()
+{
+	Stats s;
+	if (m_selection != -1 && m_selection < m_nrOfItems)
+	{
+		_updateSelection(false);
+		Item i = m_items[m_selection];
+		s = i.getStats();
+		Item::ItemDesc id = i.getType();
+
+		switch (id.type)
+		{
+		case Item::ItemType::Equippable_item:
+			
+			if (m_isEquipped[id.equipType])
+			{
+				m_items[m_selection] = m_equippedItems[id.equipType];
+				m_equippedItems[id.equipType] = i;
+			}
+			else
+			{
+				m_equippedItems[id.equipType] = i;
+				for (int i = m_selection; i < m_nrOfItems; i++)
+				{
+					m_items[i] = m_items[i + 1];
+				}
+				m_nrOfItems--;
+				m_selection--;
+				if (m_selection < 0) m_selection = 0;
+				if (m_nrOfItems == 0) m_selection = -1;
+
+
+				switch (id.equipType)
+				{
+				case Item::Helmet:
+					m_sprite[m_avatarIndices.head].setColor(Color::LIGHT_RED);
+					break;
+				case Item::Shoulders:
+					m_sprite[m_avatarIndices.lShoulder].setColor(Color::LIGHT_RED);
+					m_sprite[m_avatarIndices.rShoulder].setColor(Color::LIGHT_RED);
+					break;
+				case Item::Chest:
+					m_sprite[m_avatarIndices.chest].setColor(Color::LIGHT_RED);
+					break;
+				case Item::Waist:
+					//m_sprite[m_avatarIndices.lShoulder].setColor(Color::LIGHT_RED);
+					break;
+				case Item::Lederhosen:
+					m_sprite[m_avatarIndices.pants].setColor(Color::LIGHT_RED);
+					break;
+				case Item::Gloves:
+					m_sprite[m_avatarIndices.lGlove].setColor(Color::LIGHT_RED);
+					m_sprite[m_avatarIndices.rGlove].setColor(Color::LIGHT_RED);
+					break;
+				case Item::Boots:
+					m_sprite[m_avatarIndices.lBoots].setColor(Color::LIGHT_RED);
+					m_sprite[m_avatarIndices.rBoots].setColor(Color::LIGHT_RED);
+					break;
+				case Item::Shield:
+					break;
+				default:
+					if (id.equipType == Item::Melee_Weapon || id.equipType == Item::Ranged_Weapon)
+					{
+						m_sprite[m_avatarIndices.weapon].setColor(Color::LIGHT_RED);
+						m_sprite[m_avatarIndices.weapon].setRedrawState(true);
+					}
+					break;
+				}
+			}
+			break;
+		}
+
+
+		if (m_selection != -1)
+			_updateSelection();
+		_updateText();
+	}
+	return s;
 }
 
 void Inventory::_alloc()
@@ -92,11 +177,11 @@ void Inventory::_alloc()
 void Inventory::_setItemPos()
 {
 	int startX = 2;
-	int startY = 7;
+	int startY = 6;
 	int offY = 0;
 	for (int i = 0; i < MAX_ITEMS; i++)
 	{
-		if (i != 0 && i % 7 == 0)
+		if (i != 0 && i % 8 == 0)
 		{
 			startX += m_settings.width / 2;
 			offY = 0;
@@ -173,12 +258,16 @@ void Inventory::_createAvatar()
 	
 	// Head
 	int headIndex = avatarPos.y * m_settings.width + avatarPos.x + 2;
+	m_avatarIndices.head = headIndex;
 	m_sprite[headIndex].setSprite('@');
 	m_sprite[headIndex].setColor(Color::LIGHT_YELLOW);
 
 	// Shoulders
 	int lShoulderIndex = (avatarPos.y + 1) * m_settings.width + avatarPos.x + 1;
 	int rShoudlerIndex = lShoulderIndex + 2;
+	m_avatarIndices.lShoulder = lShoulderIndex;
+	m_avatarIndices.rShoulder = rShoudlerIndex;
+
 	m_sprite[lShoulderIndex].setSprite('/');
 	m_sprite[lShoulderIndex].setColor(Color::LIGHT_YELLOW);
 	m_sprite[rShoudlerIndex].setSprite('\\');
@@ -186,12 +275,17 @@ void Inventory::_createAvatar()
 
 	// Chest
 	int ChestIndex = (avatarPos.y + 1) * m_settings.width + avatarPos.x + 2;
+	m_avatarIndices.chest = ChestIndex;
+
 	m_sprite[ChestIndex].setSprite('|');
 	m_sprite[ChestIndex].setColor(Color::LIGHT_YELLOW);
 
 	// Gloves
 	int lgloveIndex = (avatarPos.y + 1) * m_settings.width + avatarPos.x;
 	int rgloveIndex = lgloveIndex + 4;
+	m_avatarIndices.lGlove = lgloveIndex;
+	m_avatarIndices.rGlove = rgloveIndex;
+
 	m_sprite[lgloveIndex].setSprite('_');
 	m_sprite[lgloveIndex].setColor(Color::LIGHT_YELLOW);
 	m_sprite[rgloveIndex].setSprite('_');
@@ -199,16 +293,23 @@ void Inventory::_createAvatar()
 
 	// Weapon
 	int weaponIndex = rgloveIndex + 1;
+	m_avatarIndices.weapon = weaponIndex;
+
 	m_sprite[weaponIndex].setSprite('W');
 	m_sprite[weaponIndex].setColor(Color::LIGHT_YELLOW);
 
 	// Pants
 	int PantsIndex = (avatarPos.y + 2) * m_settings.width + avatarPos.x + 2;
+	m_avatarIndices.pants = PantsIndex;
+
 	m_sprite[PantsIndex].setSprite('A');
 	m_sprite[PantsIndex].setColor(Color::LIGHT_YELLOW);
 
 	int bootsIndex = (avatarPos.y + 3) * m_settings.width + avatarPos.x + 1;
 	int RBootsIndex = bootsIndex + 2;
+	m_avatarIndices.lBoots = bootsIndex;
+	m_avatarIndices.rBoots = RBootsIndex;
+
 	m_sprite[bootsIndex].setSprite('/');
 	m_sprite[bootsIndex].setColor(Color::LIGHT_YELLOW);
 	m_sprite[RBootsIndex].setSprite('\\');
@@ -238,3 +339,4 @@ void Inventory::_updateSelection(bool deselect)
 	}
 
 }
+

@@ -29,6 +29,11 @@ bool Player::isInsideInventory()
 	return m_drawInventory;
 }
 
+void Player::UseItem()
+{
+	m_inventory.UseItem();
+}
+
 void Player::setSelectionDir(const Vec & dir)
 {
 	m_inventory.MoveSelection(dir);

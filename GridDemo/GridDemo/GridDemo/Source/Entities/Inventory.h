@@ -6,12 +6,32 @@
 class Inventory
 {
 private:
+	struct AvatarIndices
+	{
+		int head,
+			lShoulder, 
+			rShoulder, 
+			chest, 
+			lGlove, 
+			rGlove, 
+			weapon, 
+			pants, 
+			lBoots, 
+			rBoots;
+	};
+private:
 	static const int MAX_ITEMS = 16;
 	Drawable * m_sprite;
 	Item m_items[MAX_ITEMS];
+	Item m_equippedItems[9];
+	bool m_isEquipped[9];
+	// TODO :: PUT ALL EQUIPPED STATS HERE!!!!
+	 
+
 	int m_nrOfItems;
 	int m_selection;
 	Quad m_settings; // view space;
+	AvatarIndices m_avatarIndices;
 
 public:
 	Inventory();
@@ -20,6 +40,8 @@ public:
 	void setDrawState(bool state);
 	bool AddItem(const Item & item);
 	void MoveSelection(const Vec & dir);
+	Stats UseItem();
+
 private:
 	void _alloc();
 	void _setItemPos();

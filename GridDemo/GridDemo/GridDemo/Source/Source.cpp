@@ -12,12 +12,20 @@ int main()
 	Player player;
 	Map map;
 	Camera cam;
-	
 	render.Init(viewPort);
 	player.InitInventory(inventorySettings);
 	cam.setPosition(Vec{ 0,0,0 });
-
 	map.Loadmap("Assets/Map.txt", &player);
+
+
+
+
+	/*Item lol;
+	lol.setName("Lol_Item");
+	for (int i = 0; i < 16; i++)
+		player.AddItem(lol);*/
+
+
 
 	while (!GetAsyncKeyState(VK_ESCAPE))
 	{
@@ -61,7 +69,12 @@ void HandleInput(Player * player)
 		ToggledThisFrame = true;
 
 	if (interactedThisFrame && !InteractedLastFrame)
-		player->InteractRequest(true);
+	{
+		if (player->isInsideInventory())
+			player->UseItem();
+		else
+			player->InteractRequest(true);
+	}
 	else if (ToggledThisFrame && !ToggledLastFrame)
 		player->ToggleInventoryDraw();
 
@@ -87,16 +100,20 @@ void HandleInput(Player * player)
 		moveThisFrame = true;
 	}
 
-	if ((!MovedLastFrame || moveTimer.Peek() > 0.1) && moveThisFrame)
+	if ((!MovedLastFrame || moveTimer.Peek() > 0.1 || player->isInsideInventory()) && moveThisFrame)
 	{
-		moveTimer.Stop();
 		if (!player->isInsideInventory())
 		{
 			player->MoveRequest(moveDir);
+			moveTimer.Stop();
 		}
 		else
 		{
-			player->setSelectionDir(moveDir);
+			if (moveTimer.Peek() > 0.2 || !MovedLastFrame)
+			{
+				player->setSelectionDir(moveDir);
+				moveTimer.Stop();
+			}
 		}
 	}
 
