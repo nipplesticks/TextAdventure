@@ -1,5 +1,6 @@
 #include "Map.h"
 #include <fstream>
+#include <sstream>
 
 Map::Map()
 {
@@ -20,7 +21,7 @@ Map::~Map()
 void Map::Loadmap(const std::string & path, Player * player)
 {
 	_cleanup();
-
+	std::vector<int> itemId;
 	std::ifstream in;
 	in.open(path);
 	if (in)
@@ -76,11 +77,41 @@ void Map::Loadmap(const std::string & path, Player * player)
 			}
 
 		}
+		
+		std::getline(in, line);
+		std::stringstream ss(line);
+
+		for (int i = 0; i < m_items.size(); i++)
+		{
+			int id;
+			ss >> id;
+			itemId.push_back(id);
+		}
+
 		_removePlayerAndItemsFromMap();
 
-		// Load rooms and item definition
-
 		in.close();
+	}
+
+	for (int i = 0; i < m_items.size(); i++)
+	{
+		Item::Type t;
+		Stats s;
+		std::stringstream ss = _loadItem(itemId[i]);
+		std::string name = "";
+		int it, eq, hp, at, mat, ar, ma, co;
+		ss >> name >> it >> eq >> hp >> at >> mat >> ar >> ma >> co;
+		t.color = co;
+		t.type = (Item::ItemType)it;
+		t.equipType = (Item::Equippable)eq;
+		s.hp = hp;
+		s.attack = at;
+		s.armor = ar;
+		s.magicArmor = ma;
+		s.magicAttack = mat;
+		m_items[i].setType(t);
+		m_items[i].setStats(s);
+		m_items[i].setName(name);
 	}
 }
 
@@ -104,8 +135,9 @@ void Map::InteractionMap(Character * c)
 				m_map[interactPos.y * m_sizeOfMap.x + interactPos.x].setRedrawState(true);
 				m_map[interactPos.y * m_sizeOfMap.x + interactPos.x].setSprite(Sprite::DOOR_CLOSED);
 			}
-			else
+			else if (dynamic_cast<Player*>(c))
 			{
+				Player * p = dynamic_cast<Player*>(c);
 				bool found = false;
 				int at = -1;
 				for (int i = 0; i < m_items.size() && !found; i++)
@@ -119,9 +151,13 @@ void Map::InteractionMap(Character * c)
 
 				if (found)
 				{
-					Vec itemPos = m_items[at].getPosition();
-					m_items.erase(m_items.begin() + at);
-					m_map[itemPos.y * m_sizeOfMap.x + itemPos.x].setRedrawState(true);
+					Item i = m_items[at];
+					if (p->AddItem(i))
+					{
+						Vec itemPos = m_items[at].getPosition();
+						m_items.erase(m_items.begin() + at);
+						m_map[itemPos.y * m_sizeOfMap.x + itemPos.x].setRedrawState(true);
+					}
 				}
 
 			}
@@ -267,4 +303,28 @@ void Map::_removePlayerAndItemsFromMap()
 			}
 		}
 	}
+}
+
+std::stringstream Map::_loadItem(int id)
+{
+	std::stringstream ss;
+	std::ifstream items;
+	items.open("Assets/ItemList.txt");
+
+	bool found = false;
+	while (!found)
+	{
+		std::string line;
+		std::getline(items, line);
+		ss = std::stringstream(line);
+		int type;
+		ss >> type;
+		if (type == id)
+		{
+			found = true;
+		}
+	}
+
+	items.close();
+	return ss;
 }

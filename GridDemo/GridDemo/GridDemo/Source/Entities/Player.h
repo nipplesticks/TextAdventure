@@ -10,6 +10,9 @@ private:
 public:
 	Player();
 	void InitInventory(Quad settings);
+	bool AddItem(const Item & item);
 	void ToggleInventoryDraw();
+	bool isInsideInventory();
+	void setSelectionDir(const Vec & dir);
 	void Draw() override;
 };

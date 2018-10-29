@@ -68,3 +68,13 @@ void Drawable::Draw()
 {
 	EXT::g_drawQueue.push_back(this);
 }
+
+void Drawable::DrawAsHud()
+{
+	EXT::g_HudQueue.push_back(this);
+}
+
+void Drawable::DrawAsText()
+{
+	EXT::g_TextQueue.push_back(this);
+}

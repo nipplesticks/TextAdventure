@@ -30,4 +30,6 @@ public:
 	virtual bool isInNeedOfRedraw() const;
 
 	virtual void Draw();
+	virtual void DrawAsHud();
+	virtual void DrawAsText();
 };

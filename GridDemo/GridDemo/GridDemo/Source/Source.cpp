@@ -7,12 +7,14 @@ bool UpdateCamera(Character * c, Camera * cam, const Quad & viewPort);
 int main()
 {
 	Quad viewPort = { 0, 30, 80, 40 };
+	Quad inventorySettings = { 5, 5, 70, 30 };
 	Render render;
 	Player player;
 	Map map;
 	Camera cam;
 	
 	render.Init(viewPort);
+	player.InitInventory(inventorySettings);
 	cam.setPosition(Vec{ 0,0,0 });
 
 	map.Loadmap("Assets/Map.txt", &player);
@@ -42,14 +44,26 @@ void HandleInput(Player * player)
 {
 	static bool MovedLastFrame = false;
 	static bool InteractedLastFrame = false;
+	static bool ToggledLastFrame = false;
 	static Timer moveTimer(true);
 
 	bool moveThisFrame = false;
 	bool interactedThisFrame = false;
+	bool ToggledThisFrame = false;
 
 	player->InteractRequest(interactedThisFrame);
 
 	Vec moveDir = { 0,0,0 };
+
+	if (GetAsyncKeyState('E'))
+		interactedThisFrame = true;
+	else if (GetAsyncKeyState('I'))
+		ToggledThisFrame = true;
+
+	if (interactedThisFrame && !InteractedLastFrame)
+		player->InteractRequest(true);
+	else if (ToggledThisFrame && !ToggledLastFrame)
+		player->ToggleInventoryDraw();
 
 	if (GetAsyncKeyState(VK_UP))
 	{
@@ -73,20 +87,22 @@ void HandleInput(Player * player)
 		moveThisFrame = true;
 	}
 
-	if (GetAsyncKeyState('E'))
-		interactedThisFrame = true;
-
-	if (interactedThisFrame && !InteractedLastFrame)
-		player->InteractRequest(true);
-
 	if ((!MovedLastFrame || moveTimer.Peek() > 0.1) && moveThisFrame)
 	{
 		moveTimer.Stop();
-		player->MoveRequest(moveDir);
+		if (!player->isInsideInventory())
+		{
+			player->MoveRequest(moveDir);
+		}
+		else
+		{
+			player->setSelectionDir(moveDir);
+		}
 	}
 
 	MovedLastFrame = moveThisFrame;
 	InteractedLastFrame = interactedThisFrame;
+	ToggledLastFrame = ToggledThisFrame;
 }
 
 bool UpdateCamera(Character * c, Camera * cam, const Quad & viewPort)

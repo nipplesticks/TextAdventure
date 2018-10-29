@@ -6,6 +6,8 @@
 #define WIN32_LEAN_AND_MEAN
 
 std::vector<Drawable*> EXT::g_drawQueue;
+std::vector<Drawable*> EXT::g_HudQueue;
+std::vector<Drawable*> EXT::g_TextQueue;
 
 Render::Render()
 {
@@ -25,8 +27,14 @@ void Render::Init(Quad viewport)
 	cfi.FontWeight = FW_NORMAL;
 	//std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
 	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+	//GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cci);
 	SendMessage(GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);
 	rlutil::saveDefaultColor();
+	
+	_CONSOLE_CURSOR_INFO cci;
+	cci.bVisible = FALSE;
+	cci.dwSize = 1;
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cci);
 
 	m_viewPort = viewport;
 	m_size.x = m_viewPort.width;
@@ -42,21 +50,34 @@ void Render::Resize(Quad viewPort)
 
 void Render::Flush(const Camera & cam, bool forceRedraw)
 {
+	static bool HudLastFrame = false;
+	bool hudThisFrame = !EXT::g_HudQueue.empty();
+
+	if (!hudThisFrame && HudLastFrame)
+		forceRedraw = true;
+
 	if (forceRedraw)
 	{
-		_cls();
-		
+		_cls();	
 	}
-
-	for (auto & d : EXT::g_drawQueue)
+	if (!hudThisFrame)
 	{
-		Vec viewPos = d->getPosition() - cam.getPosition();
-		if (viewPos.x >= 0 && viewPos.x < m_size.x &&
-			viewPos.y >= 0 && viewPos.y < m_size.y)
+		for (auto & d : EXT::g_drawQueue)
 		{
-			m_renderTarget[viewPos.y * m_size.x + viewPos.x] = *d;
-			m_renderTarget[viewPos.y * m_size.x + viewPos.x].setPosition(viewPos);
+			Vec viewPos = d->getPosition() - cam.getPosition();
+			if (viewPos.x >= 0 && viewPos.x < m_size.x &&
+				viewPos.y >= 0 && viewPos.y < m_size.y)
+			{
+				m_renderTarget[viewPos.y * m_size.x + viewPos.x] = *d;
+				m_renderTarget[viewPos.y * m_size.x + viewPos.x].setPosition(viewPos);
+			}
 		}
+	}
+	for (auto & d : EXT::g_HudQueue)
+	{
+		Vec viewPos = d->getPosition();
+		m_renderTarget[viewPos.y * m_size.x + viewPos.x] = *d;
+		m_renderTarget[viewPos.y * m_size.x + viewPos.x].setPosition(viewPos);
 	}
 
 	for (int y = 0; y < m_size.y; y++)
@@ -74,6 +95,7 @@ void Render::Flush(const Camera & cam, bool forceRedraw)
 			}
 		}
 	}
+	HudLastFrame = hudThisFrame;
 }
 
 void Render::Clear()
@@ -81,6 +103,14 @@ void Render::Clear()
 	for (auto & t : EXT::g_drawQueue)
 		t->setRedrawState(false);
 	EXT::g_drawQueue.clear();
+	
+
+	for (auto & t : EXT::g_HudQueue)
+		t->setRedrawState(false);
+	EXT::g_HudQueue.clear();
+	for (auto & t : EXT::g_TextQueue)
+		t->setRedrawState(false);
+	EXT::g_TextQueue.clear();
 }
 
 void Render::_cleanup()
@@ -105,6 +135,7 @@ void Render::_setTarget(const int & x, const int & y)
 	std::cout.flush();
 	COORD coord = { (SHORT)x, (SHORT)y };
 	SetConsoleCursorPosition(hOut, coord);
+	
 }
 
 void Render::_cls()

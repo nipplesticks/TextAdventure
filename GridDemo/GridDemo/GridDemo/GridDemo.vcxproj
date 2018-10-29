@@ -115,7 +115,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="Assets\ItemList.txt" />
     <Text Include="Assets\Map.txt" />
+    <Text Include="Assets\Text.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\Camera.h" />

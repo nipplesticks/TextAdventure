@@ -28,4 +28,5 @@ private:
 	void _copy(const Map & other);
 	void _alloc();
 	void _removePlayerAndItemsFromMap();
+	std::stringstream _loadItem(int id);
 };
