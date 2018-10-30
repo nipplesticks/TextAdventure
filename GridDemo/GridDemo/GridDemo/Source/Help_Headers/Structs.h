@@ -4,8 +4,7 @@ struct Stats
 {
 	int hp = 0;
 	int attack = 0;
-	int magicAttack = 0;
-
+	int abilityPower = 0;
 	int armor = 0;
 	int magicArmor = 0;
 	Stats operator+(const Stats & other)
@@ -15,7 +14,7 @@ struct Stats
 		s.hp =			hp			+ other.hp;
 		s.attack =		attack		+ other.attack;
 		s.armor =		armor		+ other.armor;
-		s.magicAttack = magicAttack + other.magicAttack;
+		s.abilityPower = abilityPower + other.abilityPower;
 		s.magicArmor = magicArmor + other.magicArmor;
 		return s;
 	}
@@ -26,7 +25,7 @@ struct Stats
 		s.hp =			hp			- other.hp;
 		s.attack =		attack		- other.attack;
 		s.armor =		armor		- other.armor;
-		s.magicAttack = magicAttack - other.magicAttack;
+		s.abilityPower = abilityPower - other.abilityPower;
 		s.magicArmor = magicArmor - other.magicArmor;
 		return s;
 	}

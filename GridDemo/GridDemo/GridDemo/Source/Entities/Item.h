@@ -18,11 +18,10 @@ public:
 		Helmet			= 0,
 		Shoulders		= 1,
 		Chest			= 2,
-		Waist			= 3,
-		Lederhosen		= 4, // Pants
-		Gloves			= 5,
-		Boots			= 6,
-		Melee_Weapon	= 7,
+		Lederhosen		= 3, // Pants
+		Gloves			= 4,
+		Boots			= 5,
+		Melee_Weapon	= 6,
 		Ranged_Weapon	= 7,
 		Shield			= 8,
 		NONE			= 9

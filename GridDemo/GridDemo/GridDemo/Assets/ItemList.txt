@@ -1,5 +1,43 @@
-0 Wooden_Sword 2 7 0 2 0 0 0 8
-1 Wooden_Shield 2 8 0 0 0 5 0 8
-2 Ugly_Sandals 2 6 0 0 0 1 0 8
-3 Basic_Shorts 2 4 0 0 0 1 0 8
-4 Health_Potion 1 9 5 0 0 0 0 7
+#	[Itemtype]				[EquippableType]		[Color]			[Color cont.]
+#	Trash			= 0		Helmet			= 0,	BLACK	= 0;	LIGHT_BLUE		= 9;
+#	Usable_item		= 1		Shoulders		= 1,	BLUE	= 1;	LIGHT_GREEN		= 10;
+#	Equippable_item	= 2		Chest			= 2,	GREEN	= 2;	LIGHT_AQUA		= 11;
+#							Lederhosen		= 3,	AQUA	= 3;	LIGHT_RED		= 12;
+#							Gloves			= 4,	RED		= 4;	LIGHT_PURPLE	= 13;
+#							Boots			= 5,	PURPLE	= 5;	LIGHT_YELLOW	= 14;
+#							Melee_Weapon	= 6,	YELLOW	= 6;	LIGHT_WHITE		= 15;
+#							Ranged_Weapon	= 7,	WHITE	= 7;
+#							Shield			= 8,	GRAY	= 8;
+#							NONE			= 9
+#
+#
+#
+#
+###########################################################################################################################
+[ID]	[Name]			[ItemType]	[EquippableType]	[HP]	[Attack]	[MagicAttack]	[Armor]	[MagicArmor]	[Color]
+0		Wooden_Sword	2			6					0		2			0				0		0				8
+1		Wooden_Shield	2			8					0		0			0				5		0				8
+2		Ugly_Sandals	2			5					0		0			0				1		0				8
+3		Basic_Shorts	2			3					0		0			0				1		0				8
+4		Health_Potion	1			9					5		0			0				0		0				7
+5		Just_A_Shirt	2			2					0		0			0				1		0				8
+6		Baseball_Cap	2			0					0		1			0				1		0				7
+7		Tin_can			2			1					0		0			1				1		0				7
+8		Biker_gloves	2			4					0		1			0				0		0				8
+9		Bad_Bow			2			7					0		2			0				0		0				8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -95,23 +95,31 @@ void Map::Loadmap(const std::string & path, Player * player)
 
 	for (int i = 0; i < m_items.size(); i++)
 	{
+		bool foundItem;
 		Item::ItemDesc t;
 		Stats s;
-		std::stringstream ss = _loadItem(itemId[i]);
-		std::string name = "";
-		int it, eq, hp, at, mat, ar, ma, co;
-		ss >> name >> it >> eq >> hp >> at >> mat >> ar >> ma >> co;
-		t.color = co;
-		t.type = (Item::ItemType)it;
-		t.equipType = (Item::Equippable)eq;
-		s.hp = hp;
-		s.attack = at;
-		s.armor = ar;
-		s.magicArmor = ma;
-		s.magicAttack = mat;
-		m_items[i].setType(t);
-		m_items[i].setStats(s);
-		m_items[i].setName(name);
+		std::stringstream ss = _loadItem(itemId[i], foundItem);
+		if (foundItem)
+		{
+			std::string name = "";
+			int it, eq, hp, at, mat, ar, ma, co;
+			ss >> name >> it >> eq >> hp >> at >> mat >> ar >> ma >> co;
+			t.color = co;
+			t.type = (Item::ItemType)it;
+			t.equipType = (Item::Equippable)eq;
+			s.hp = hp;
+			s.attack = at;
+			s.armor = ar;
+			s.magicArmor = ma;
+			s.abilityPower = mat;
+			m_items[i].setType(t);
+			m_items[i].setStats(s);
+			m_items[i].setName(name);
+		}
+		else
+		{
+			m_items.erase(m_items.begin() + i);
+		}
 	}
 }
 
@@ -305,23 +313,26 @@ void Map::_removePlayerAndItemsFromMap()
 	}
 }
 
-std::stringstream Map::_loadItem(int id)
+std::stringstream Map::_loadItem(int id, __out bool & found)
 {
 	std::stringstream ss;
 	std::ifstream items;
 	items.open("Assets/ItemList.txt");
 
-	bool found = false;
+	found = false;
 	while (!found)
 	{
 		std::string line;
 		std::getline(items, line);
-		ss = std::stringstream(line);
-		int type;
-		ss >> type;
-		if (type == id)
+		if (line != "" && line[0] != '#' && line[0] != '[')
 		{
-			found = true;
+			ss = std::stringstream(line);
+			int type;
+			ss >> type;
+			if (type == id)
+			{
+				found = true;
+			}
 		}
 	}
 

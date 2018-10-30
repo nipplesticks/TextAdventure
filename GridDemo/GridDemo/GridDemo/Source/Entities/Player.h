@@ -7,7 +7,6 @@ class Player : public Character
 private:
 	Inventory m_inventory;
 	bool m_drawInventory;
-	Stats m_bonusStats;
 public:
 	Player();
 	void InitInventory(Quad settings);

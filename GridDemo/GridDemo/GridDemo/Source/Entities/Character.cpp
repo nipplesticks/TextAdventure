@@ -5,7 +5,7 @@ Character::Character() : Drawable()
 	m_maxHP = 10;
 	m_stats.hp = m_maxHP;
 	m_stats.attack = 1;
-	m_stats.magicAttack = 1;
+	m_stats.abilityPower = 1;
 	m_stats.armor = 1;
 	m_stats.magicArmor = 1;
 

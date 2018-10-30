@@ -7,7 +7,7 @@ Player::Player() : Character()
 
 void Player::InitInventory(Quad settings)
 {
-	m_inventory.Init(settings);
+	m_inventory.Init(settings, getStats());
 }
 
 bool Player::AddItem(const Item & item)
@@ -31,7 +31,7 @@ bool Player::isInsideInventory()
 
 void Player::UseItem()
 {
-	m_inventory.UseItem();
+	m_inventory.UseItem(getStats(), getStats().hp, getMaxHP());
 }
 
 void Player::setSelectionDir(const Vec & dir)

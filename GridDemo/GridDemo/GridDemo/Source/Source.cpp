@@ -18,12 +18,16 @@ int main()
 	map.Loadmap("Assets/Map.txt", &player);
 
 
-
-
-	/*Item lol;
+	/*Item::ItemDesc id;
+	id.type = Item::ItemType::Equippable_item;
+	Item lol;
 	lol.setName("Lol_Item");
-	for (int i = 0; i < 16; i++)
-		player.AddItem(lol);*/
+	for (int i = 0; i < 8; i++)
+	{
+		id.equipType = (Item::Equippable)(i);
+		lol.setType(id);
+		player.AddItem(lol);
+	}*/
 
 
 
