@@ -2,8 +2,7 @@
 
 Character::Character() : Drawable()
 {
-	m_maxHP = 10;
-	m_stats.hp = m_maxHP;
+	m_stats.hp = 10;
 	m_stats.attack = 1;
 	m_stats.abilityPower = 1;
 	m_stats.armor = 1;
@@ -44,18 +43,6 @@ bool Character::isInteracting() const
 	return m_interactRequest;
 }
 
-void Character::setMaxHp(int maxHP)
-{
-	m_maxHP = maxHP;
-	if (m_stats.hp > m_maxHP)
-		m_stats.hp = m_maxHP;
-}
-
-int Character::getMaxHP() const
-{
-	return m_maxHP;
-}
-
 void Character::Move()
 {
 	if (m_moveRequest.x != 0 || m_moveRequest.y != 0)
@@ -78,26 +65,4 @@ const Stats & Character::getStats() const
 void Character::addStats(const Stats & s)
 {
 	m_stats = m_stats + s;
-}
-
-void Character::setHP(int hp)
-{
-	if (hp > m_maxHP)
-		m_stats.hp = m_maxHP;
-	else
-		m_stats.hp = hp;
-}
-
-void Character::addHP(int hp)
-{
-	m_stats.hp += hp;
-	if (m_stats.hp > m_maxHP)
-		m_stats.hp = m_maxHP;
-	else if (m_stats.hp < 0)
-		m_stats.hp = 0;
-}
-
-int Character::getHP() const
-{
-	return m_stats.hp;
 }

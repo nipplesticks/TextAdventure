@@ -17,7 +17,7 @@ void Inventory::Init(Quad settings, const Stats & playerBaseStats)
 	m_settings = settings;
 	_alloc();
 	_initText();
-	_setPlayerStats(playerBaseStats, playerBaseStats.hp, playerBaseStats.hp);
+	_setPlayerStats(playerBaseStats, playerBaseStats.hp);
 	_setItemPos();
 }
 
@@ -77,7 +77,7 @@ void Inventory::MoveSelection(const Vec & dir)
 	}
 }
 
-void Inventory::UseItem(const Stats & playerBaseStats, const int & currentHP, const int & maxHP)
+void Inventory::UseItem(const Stats & playerBaseStats, const int & currentHP)
 {
 	if (m_selection != -1 && m_selection < m_nrOfItems)
 	{
@@ -98,6 +98,7 @@ void Inventory::UseItem(const Stats & playerBaseStats, const int & currentHP, co
 			}
 			else
 			{
+				m_isEquipped[id.equipType] = true;
 				m_equippedItems[id.equipType] = item;
 				for (int i = m_selection; i < m_nrOfItems - 1; i++)
 				{
@@ -167,7 +168,7 @@ void Inventory::UseItem(const Stats & playerBaseStats, const int & currentHP, co
 			_updateSelection();
 		_updateText();
 		_updateStatsFromEquippment();
-		_setPlayerStats(m_statsFromEquippment + playerBaseStats, currentHP, maxHP);
+		_setPlayerStats(m_statsFromEquippment + playerBaseStats, currentHP);
 	}
 }
 
@@ -275,12 +276,14 @@ void Inventory::_updateText()
 		{
 			m_sprite[pos.y * m_settings.width + k + pos.x].setSprite(name[k]);
 			m_sprite[pos.y * m_settings.width + k + pos.x].setColor(m_items[i].getType().color);
+			m_sprite[pos.y * m_settings.width + k + pos.x].setRedrawState(true);
 		}
 		int length2 = type.size();
 		for (int k = 0; k < length2; k++)
 		{
 			m_sprite[pos.y * m_settings.width + k + pos.x + length + 1].setSprite(type[k]);
 			m_sprite[pos.y * m_settings.width + k + pos.x + length + 1].setColor(m_items[i].getType().color);
+			m_sprite[pos.y * m_settings.width + k + pos.x + length + 1].setRedrawState(true);
 		}
 
 		Stats s = m_items[i].getStats();
@@ -295,12 +298,14 @@ void Inventory::_updateText()
 		{
 			m_sprite[(pos.y + 1) * m_settings.width + k + pos.x + 2].setSprite(firstRow[k]);
 			m_sprite[(pos.y + 1) * m_settings.width + k + pos.x + 2].setColor(color);
+			m_sprite[(pos.y + 1) * m_settings.width + k + pos.x + 2].setRedrawState(true);
 		}
 		length = (int)secondRow.size();
 		for (int k = 0; k < length; k++)
 		{
 			m_sprite[(pos.y + 2) * m_settings.width + k + pos.x + 2].setSprite(secondRow[k]);
 			m_sprite[(pos.y + 2) * m_settings.width + k + pos.x + 2].setColor(color);
+			m_sprite[(pos.y + 2) * m_settings.width + k + pos.x + 2].setRedrawState(true);
 		}
 	}
 
@@ -435,13 +440,13 @@ void Inventory::_resetEverything()
 		}
 }
 
-void Inventory::_setPlayerStats(const Stats & stats, const int & currentHP, const int & maxHP)
+void Inventory::_setPlayerStats(const Stats & stats, const int & currentHP)
 {
 	std::string AT = "AT: " + std::to_string(stats.attack);
 	std::string AP = "AP: " + std::to_string(stats.abilityPower);
 	std::string AR = "AR: " + std::to_string(stats.armor);
 	std::string MR = "MR: " + std::to_string(stats.magicArmor);
-	std::string HP = "HP: {" + std::to_string(currentHP) + "/" + std::to_string(maxHP) + "}";
+	std::string HP = "HP: {" + std::to_string(currentHP) + "/" + std::to_string(stats.hp) + "}";
 
 
 	std::string s[4] = { AT, AP, AR, MR };
@@ -455,6 +460,7 @@ void Inventory::_setPlayerStats(const Stats & stats, const int & currentHP, cons
 			int index = (i + 2) * m_settings.width + middle - (int)size / 2 + k;
 			m_sprite[index].setSprite(s[i][k]);
 			m_sprite[index].setColor(Color::WHITE);
+			m_sprite[index].setRedrawState(true);
 		}
 	}
 
@@ -463,6 +469,7 @@ void Inventory::_setPlayerStats(const Stats & stats, const int & currentHP, cons
 		int index = 7 * m_settings.width + m_settings.width - 5 - (int)HP.size() + i;
 		m_sprite[index].setSprite(HP[i]);
 		m_sprite[index].setColor(Color::WHITE);
+		m_sprite[index].setRedrawState(true);
 	}
 
 }

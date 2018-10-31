@@ -6,7 +6,9 @@ class Player : public Character
 {
 private:
 	Inventory m_inventory;
+	int m_currentHP;
 	bool m_drawInventory;
+
 public:
 	Player();
 	void InitInventory(Quad settings);
@@ -16,4 +18,7 @@ public:
 	void UseItem();
 	void setSelectionDir(const Vec & dir);
 	void Draw() override;
+	void setHP(int hp);
+	void AddHP(int hp);
+	int getHP() const;
 };

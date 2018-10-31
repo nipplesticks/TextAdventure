@@ -41,7 +41,7 @@ public:
 	void setDrawState(bool state);
 	bool AddItem(const Item & item);
 	void MoveSelection(const Vec & dir);
-	void UseItem(const Stats & playerBaseStats, const int & currentHP, const int & maxHP);
+	void UseItem(const Stats & playerBaseStats, const int & currentHP);
 	const Stats & getBonusStats() const;
 
 private:
@@ -55,6 +55,6 @@ private:
 	void _updateSelection(bool deselect = false);
 	void _updateStatsFromEquippment();
 	void _resetEverything();
-	void _setPlayerStats(const Stats & stats, const int & currentHP, const int & maxHP);
+	void _setPlayerStats(const Stats & stats, const int & currentHP);
 	std::string _getStringFromType(const Item & item);
 };

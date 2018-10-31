@@ -4,7 +4,6 @@
 class Character : public Drawable
 {
 private:
-	int m_maxHP;
 	Stats m_stats;
 	Vec m_moveRequest;
 	Vec m_interactDir;
@@ -18,16 +17,9 @@ public:
 	void InteractRequest(bool req);
 	bool isInteracting() const;
 
-	void setMaxHp(int maxHP);
-	int getMaxHP() const;
-
 	void Move();
 
 	void setStats(const Stats & s);
 	const Stats &  getStats() const;
 	void addStats(const Stats & s);
-
-	void setHP(int hp);
-	void addHP(int hp);
-	int getHP() const;
 };
