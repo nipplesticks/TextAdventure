@@ -17,7 +17,6 @@ Button::Button()
 	m_button.setPosition(0, 0);
 	m_button.setSize(sf::Vector2f{ 100, 50 });
 	m_button.setOutlineColor(sf::Color::Black);
-	m_button.setOutlineThickness(-1.0f);
 
 	m_state = Standard;
 
@@ -60,6 +59,11 @@ void Button::setState(const Button_State & state)
 	}
 }
 
+void Button::setOutlineColor(const sf::Color & oCol)
+{
+	m_button.setOutlineColor(oCol);
+}
+
 const sf::Vector2f & Button::getPosition() const
 {
 	return m_button.getPosition();
@@ -75,11 +79,23 @@ const Button::Button_State & Button::getState() const
 	return m_state;
 }
 
+void Button::setTextSize(float size)
+{
+	m_text.setCharacterSize(size);
+	_allign();
+}
+
+void Button::setTextColor(const sf::Color & tCol)
+{
+	m_text.setFillColor(tCol);
+}
+
 void Button::setColors(const sf::Color & standard, const sf::Color & hover, const sf::Color & press)
 {
 	m_colors[Standard]	= standard;
 	m_colors[Hover]		= hover;
 	m_colors[Press]		= press;
+	m_button.setFillColor(m_colors[m_state]);
 }
 
 bool Button::PointIsInside(float x, float y)
@@ -104,11 +120,11 @@ void Button::_allign()
 {
 	const sf::Vector2f & Qpos = getPosition();
 	const sf::Vector2f & Qsize = getSize();
-
-	//const sf::FloatRect & Tquad = m_text.getGlobalBounds();
 	const sf::FloatRect & Tquad = m_text.getLocalBounds();
-
 	sf::Vector2f origin = { (Tquad.left + Tquad.width) * 0.5f, (Tquad.top + Tquad.height) * 0.5f };
 	m_text.setOrigin(origin);
-	m_text.setPosition(Qpos + Qsize * 0.5f);
+	if (m_text.getString().getSize() > 1)
+		m_text.setPosition(Qpos + Qsize * 0.5f);
+	else
+		m_text.setPosition(Qpos.x + Qsize.x * 0.5f, Qpos.y);
 }

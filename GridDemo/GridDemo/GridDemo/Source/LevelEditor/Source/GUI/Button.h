@@ -18,6 +18,8 @@ private:
 	Button_State m_state;
 	sf::Color m_colors[3];
 	sf::Text m_text;
+
+
 public:
 	Button();
 	~Button();
@@ -27,10 +29,14 @@ public:
 	void setSize(float x, float y);
 	void setState(const Button_State & state);
 
+	void setOutlineColor(const sf::Color & oCol);
+
 	const sf::Vector2f & getPosition() const;
 	const sf::Vector2f & getSize() const;
 	const Button_State & getState() const;
 
+	void setTextSize(float size);
+	void setTextColor(const sf::Color & tCol);
 
 	void setColors(const sf::Color & standard, const sf::Color & hover,	const sf::Color & press);
 	bool PointIsInside(float x, float y);
