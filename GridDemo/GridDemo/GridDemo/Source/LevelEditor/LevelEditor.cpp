@@ -168,11 +168,13 @@ void LevelEditor::_handleKeyboardInput()
 
 	if (Up_now && !Up_last)
 	{
-		m_camPos.y -= m_camSize.y;
+		//m_camPos.y -= m_camSize.y;
+		m_fieldOne.addChar('M');
 	}
 	else if (Down_now && !Down_last)
 	{
-		m_camPos.y += m_camSize.y;
+		//m_camPos.y += m_camSize.y;
+		m_fieldOne.RemoveChar();
 	}
 	if (Left_now && !Left_last)
 	{

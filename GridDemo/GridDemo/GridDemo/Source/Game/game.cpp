@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include <SFML/Graphics.hpp>
 
 Game::Game()
 {
@@ -75,6 +75,7 @@ void Game::_handleInput(float dt)
 	else if (ToggledThisFrame && !ToggledLastFrame)
 		m_player.ToggleInventoryDraw();
 
+	
 	if (GetAsyncKeyState(VK_UP))
 	{
 		moveThisFrame = true;
