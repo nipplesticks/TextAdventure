@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <SFML/Graphics.hpp>
 
 Game::Game()
 {
@@ -34,12 +33,11 @@ void Game::Update(float dt)
 
 void Game::Draw()
 {
-	m_render.Clear();
-
 	m_map.Draw();
 	m_player.Draw();
-
 	m_render.Flush(m_cam, _updateCamera());
+
+	m_render.Clear();
 }
 
 void Game::_handleInput(float dt)

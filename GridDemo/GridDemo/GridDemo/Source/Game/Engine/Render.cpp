@@ -41,6 +41,26 @@ void Render::Init(Quad viewport)
 	cci.dwSize = 1;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cci);
 
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO SBInfo;
+	int Status;
+
+	GetConsoleScreenBufferInfo(hOut, &SBInfo);
+	COORD NewSBSize =
+	{
+		SBInfo.srWindow.Right - SBInfo.srWindow.Left + 1,
+		SBInfo.srWindow.Bottom - SBInfo.srWindow.Top + 1
+	};
+
+	Status = SetConsoleScreenBufferSize(hOut, NewSBSize);
+	if (Status == 0)
+	{
+		Status = GetLastError();
+		std::cout << "SetConsoleScreenBufferSize() failed! : " << Status << std::endl;
+		exit(Status);
+	}
+	GetConsoleScreenBufferInfo(hOut, &SBInfo);
+
 	m_viewPort = viewport;
 	m_size.x = m_viewPort.width;
 	m_size.y = m_viewPort.height;
