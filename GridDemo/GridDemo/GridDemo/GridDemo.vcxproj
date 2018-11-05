@@ -147,6 +147,7 @@
     <ClInclude Include="Source\Game\MapStuff\Map.h" />
     <ClInclude Include="Source\LevelEditor\LevelEditor.h" />
     <ClInclude Include="Source\LevelEditor\Source\GUI\Button.h" />
+    <ClInclude Include="Source\LevelEditor\Source\GUI\TextField.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\Engine\Camera.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Source\Game\MapStuff\Map.cpp" />
     <ClCompile Include="Source\LevelEditor\LevelEditor.cpp" />
     <ClCompile Include="Source\LevelEditor\Source\GUI\Button.cpp" />
+    <ClCompile Include="Source\LevelEditor\Source\GUI\TextField.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

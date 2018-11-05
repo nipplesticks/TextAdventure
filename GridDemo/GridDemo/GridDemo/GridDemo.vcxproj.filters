@@ -71,6 +71,9 @@
     <ClInclude Include="Source\LevelEditor\Source\GUI\Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\LevelEditor\Source\GUI\TextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Source.cpp">
@@ -107,6 +110,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\LevelEditor\LevelEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LevelEditor\Source\GUI\TextField.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -38,10 +38,15 @@ void Button::setText(const sf::String & text)
 	_allign();
 }
 
-void Button::setPosition(float x, float y)
+void Button::setViewPosition(float x, float y)
 {
 	m_button.setPosition(x, y);
 	_allign();
+}
+
+void Button::setWorldPosition(float x, float y)
+{
+	m_worldPos = { x, y };
 }
 
 void Button::setSize(float x, float y)
@@ -64,9 +69,14 @@ void Button::setOutlineColor(const sf::Color & oCol)
 	m_button.setOutlineColor(oCol);
 }
 
-const sf::Vector2f & Button::getPosition() const
+const sf::Vector2f & Button::getViewPosition() const
 {
 	return m_button.getPosition();
+}
+
+const sf::Vector2f & Button::getWorldPosition() const
+{
+	return m_worldPos;
 }
 
 const sf::Vector2f & Button::getSize() const
@@ -100,7 +110,7 @@ void Button::setColors(const sf::Color & standard, const sf::Color & hover, cons
 
 bool Button::PointIsInside(float x, float y)
 {
-	const sf::Vector2f & pos = getPosition();
+	const sf::Vector2f & pos = getViewPosition();
 	const sf::Vector2f & size = getSize();
 
 
@@ -118,7 +128,7 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void Button::_allign()
 {
-	const sf::Vector2f & Qpos = getPosition();
+	const sf::Vector2f & Qpos = getViewPosition();
 	const sf::Vector2f & Qsize = getSize();
 	const sf::FloatRect & Tquad = m_text.getLocalBounds();
 	sf::Vector2f origin = { (Tquad.left + Tquad.width) * 0.5f, (Tquad.top + Tquad.height) * 0.5f };

@@ -1,5 +1,6 @@
 #pragma once
 #include "Source/GUI/Button.h"
+#include "Source/GUI/TextField.h"
 class LevelEditor
 {
 private:
@@ -13,8 +14,21 @@ private:
 	sf::Vector2i m_endPos;
 
 	// Camera
-	sf::Vector2i m_camPos;
-	sf::Vector2i m_camSize;
+	sf::Vector2f m_camPos;
+	sf::Vector2f m_camSize;
+
+	// Mouse
+	sf::Vector2i m_MouseLastFrame;
+	sf::Vector2i m_MouseThisFrame;
+
+	// Panels
+	sf::RectangleShape m_RightPanel;
+	sf::RectangleShape m_BottomPanel;
+
+	// Text
+	TextField m_fieldOne;
+
+
 public:
 	LevelEditor();
 	~LevelEditor();
@@ -25,4 +39,8 @@ public:
 	void Draw();
 private:
 	void _init();
+	void _input();
+	void _mapMove();
+	void _handleKeyboardInput();
+	void _handleMouseInput();
 };

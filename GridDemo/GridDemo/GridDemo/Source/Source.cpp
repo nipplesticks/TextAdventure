@@ -36,7 +36,7 @@ int main()
 	for (int i = 0; i < 3; i++)
 	{
 		buttons[i].setSize((float)buttonSize.x, (float)buttonSize.y);
-		buttons[i].setPosition(windowSize.x / 2 - buttonSize.x / 2, 25 + (((windowSize.y - 50) / 2) - buttonSize.y / 2) * i);
+		buttons[i].setViewPosition(windowSize.x / 2 - buttonSize.x / 2, 25 + (((windowSize.y - 50) / 2) - buttonSize.y / 2) * i);
 	}
 
 	bool stillPlaying = true;

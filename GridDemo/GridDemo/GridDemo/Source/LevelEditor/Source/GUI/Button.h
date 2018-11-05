@@ -15,6 +15,7 @@ private:
 	static bool s_fontLoaded;
 
 	sf::RectangleShape m_button;
+	sf::Vector2f m_worldPos;
 	Button_State m_state;
 	sf::Color m_colors[3];
 	sf::Text m_text;
@@ -25,13 +26,15 @@ public:
 	~Button();
 
 	void setText(const sf::String & text);
-	void setPosition(float x, float y);
+	void setViewPosition(float x, float y);
+	void setWorldPosition(float x, float y);
 	void setSize(float x, float y);
 	void setState(const Button_State & state);
 
 	void setOutlineColor(const sf::Color & oCol);
 
-	const sf::Vector2f & getPosition() const;
+	const sf::Vector2f & getViewPosition() const;
+	const sf::Vector2f & getWorldPosition() const;
 	const sf::Vector2f & getSize() const;
 	const Button_State & getState() const;
 
