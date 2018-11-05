@@ -84,7 +84,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)SFML-2.5.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-system-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -108,10 +114,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)SFML-2.5.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-audio-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -120,30 +130,36 @@
     <Text Include="Assets\Text.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Engine\Camera.h" />
-    <ClInclude Include="Source\Engine\Extern.h" />
-    <ClInclude Include="Source\Engine\Render.h" />
-    <ClInclude Include="Source\Entities\Character.h" />
-    <ClInclude Include="Source\Entities\Drawable.h" />
-    <ClInclude Include="Source\Entities\Inventory.h" />
-    <ClInclude Include="Source\Entities\Item.h" />
-    <ClInclude Include="Source\Entities\Player.h" />
-    <ClInclude Include="Source\Help_Headers\Colors.h" />
-    <ClInclude Include="Source\Help_Headers\rlutil.h" />
-    <ClInclude Include="Source\Help_Headers\Sprites.h" />
-    <ClInclude Include="Source\Help_Headers\Structs.h" />
-    <ClInclude Include="Source\Help_Headers\Timer.h" />
-    <ClInclude Include="Source\MapStuff\Map.h" />
+    <ClInclude Include="Source\Game\Engine\Camera.h" />
+    <ClInclude Include="Source\Game\Engine\Extern.h" />
+    <ClInclude Include="Source\Game\Engine\Render.h" />
+    <ClInclude Include="Source\Game\Entities\Character.h" />
+    <ClInclude Include="Source\Game\Entities\Drawable.h" />
+    <ClInclude Include="Source\Game\Entities\Inventory.h" />
+    <ClInclude Include="Source\Game\Entities\Item.h" />
+    <ClInclude Include="Source\Game\Entities\Player.h" />
+    <ClInclude Include="Source\Game\Game.h" />
+    <ClInclude Include="Source\Game\Help_Headers\Colors.h" />
+    <ClInclude Include="Source\Game\Help_Headers\rlutil.h" />
+    <ClInclude Include="Source\Game\Help_Headers\Sprites.h" />
+    <ClInclude Include="Source\Game\Help_Headers\Structs.h" />
+    <ClInclude Include="Source\Game\Help_Headers\Timer.h" />
+    <ClInclude Include="Source\Game\MapStuff\Map.h" />
+    <ClInclude Include="Source\LevelEditor\LevelEditor.h" />
+    <ClInclude Include="Source\LevelEditor\Source\GUI\Button.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Engine\Camera.cpp" />
-    <ClCompile Include="Source\Engine\Render.cpp" />
-    <ClCompile Include="Source\Entities\Character.cpp" />
-    <ClCompile Include="Source\Entities\Drawable.cpp" />
-    <ClCompile Include="Source\Entities\Inventory.cpp" />
-    <ClCompile Include="Source\Entities\Item.cpp" />
-    <ClCompile Include="Source\Entities\Player.cpp" />
-    <ClCompile Include="Source\MapStuff\Map.cpp" />
+    <ClCompile Include="Source\Game\Engine\Camera.cpp" />
+    <ClCompile Include="Source\Game\Engine\Render.cpp" />
+    <ClCompile Include="Source\Game\Entities\Character.cpp" />
+    <ClCompile Include="Source\Game\Entities\Drawable.cpp" />
+    <ClCompile Include="Source\Game\Entities\Inventory.cpp" />
+    <ClCompile Include="Source\Game\Entities\Item.cpp" />
+    <ClCompile Include="Source\Game\Entities\Player.cpp" />
+    <ClCompile Include="Source\Game\game.cpp" />
+    <ClCompile Include="Source\Game\MapStuff\Map.cpp" />
+    <ClCompile Include="Source\LevelEditor\LevelEditor.cpp" />
+    <ClCompile Include="Source\LevelEditor\Source\GUI\Button.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -20,46 +20,55 @@
     <Text Include="Assets\Text.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Help_Headers\Colors.h">
+    <ClInclude Include="Source\Game\Engine\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Help_Headers\rlutil.h">
+    <ClInclude Include="Source\Game\Engine\Extern.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Help_Headers\Sprites.h">
+    <ClInclude Include="Source\Game\Engine\Render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Help_Headers\Structs.h">
+    <ClInclude Include="Source\Game\Entities\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Help_Headers\Timer.h">
+    <ClInclude Include="Source\Game\Entities\Drawable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Camera.h">
+    <ClInclude Include="Source\Game\Entities\Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Extern.h">
+    <ClInclude Include="Source\Game\Entities\Item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Render.h">
+    <ClInclude Include="Source\Game\Entities\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\Character.h">
+    <ClInclude Include="Source\Game\Help_Headers\Colors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\Drawable.h">
+    <ClInclude Include="Source\Game\Help_Headers\rlutil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\Inventory.h">
+    <ClInclude Include="Source\Game\Help_Headers\Sprites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\Player.h">
+    <ClInclude Include="Source\Game\Help_Headers\Structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\MapStuff\Map.h">
+    <ClInclude Include="Source\Game\Help_Headers\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\Item.h">
+    <ClInclude Include="Source\Game\MapStuff\Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LevelEditor\LevelEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LevelEditor\Source\GUI\Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -67,28 +76,37 @@
     <ClCompile Include="Source\Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Camera.cpp">
+    <ClCompile Include="Source\Game\Engine\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Render.cpp">
+    <ClCompile Include="Source\Game\Engine\Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Character.cpp">
+    <ClCompile Include="Source\Game\Entities\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Drawable.cpp">
+    <ClCompile Include="Source\Game\Entities\Drawable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Inventory.cpp">
+    <ClCompile Include="Source\Game\Entities\Inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Player.cpp">
+    <ClCompile Include="Source\Game\Entities\Item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\MapStuff\Map.cpp">
+    <ClCompile Include="Source\Game\Entities\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Item.cpp">
+    <ClCompile Include="Source\Game\MapStuff\Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LevelEditor\Source\GUI\Button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LevelEditor\LevelEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

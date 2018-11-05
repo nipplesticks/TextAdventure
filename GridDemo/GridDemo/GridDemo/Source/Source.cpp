@@ -1,158 +1,148 @@
-#include "Engine\Render.h"
-#include "MapStuff\Map.h"
-#include "Help_Headers\Timer.h"
+#include "LevelEditor/Source/GUI/Button.h"
+#include "LevelEditor/LevelEditor.h"
+#include "Game/Game.h"
 
-void HandleInput(Player * player);
-bool UpdateCamera(Character * c, Camera * cam, const Quad & viewPort);
+
+void GameLoop();
+void LevelEditorLoop();
+enum Button_Types
+{
+	StartGame = 0,
+	StartLevelEditor,
+	Exit
+};
+
+enum Menu_Choice
+{
+	MainMenu = 0,
+	RunGame,
+	RunLevelEditor
+};
+
 int main()
 {
-	Quad viewPort = { 0, 30, 80, 40 };
-	Quad inventorySettings = { 5, 5, 70, 30 };
-	Render render;
-	Player player;
-	Map map;
-	Camera cam;
-	render.Init(viewPort);
-	player.InitInventory(inventorySettings);
-	cam.setPosition(Vec{ 0,0,0 });
-	map.Loadmap("Assets/Map.txt", &player);
+
+	sf::Vector2i windowSize = { 640, 480 };
+	sf::RenderWindow * mainMenu = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), "Text adventure");
+	Button buttons[3];
+
+	buttons[StartGame].setText("Start Game");
+	buttons[StartLevelEditor].setText("Level Editor");
+	buttons[Exit].setText("Exit");
 
 
-	/*Item::ItemDesc id;
-	id.type = Item::ItemType::Equippable_item;
-	Item lol;
-	lol.setName("Lol_Item");
-	for (int i = 0; i < 8; i++)
+	sf::Vector2i buttonSize = {300, 100};
+
+	for (int i = 0; i < 3; i++)
 	{
-		id.equipType = (Item::Equippable)(i);
-		lol.setType(id);
-		player.AddItem(lol);
-	}*/
-
-
-
-	while (!GetAsyncKeyState(VK_ESCAPE))
-	{
-		render.Clear();
-		Vec moveDir = { 0,0,0 };
-		//Update
-		HandleInput(&player);
-
-
-
-		map.InteractionMap(&player);
-		player.Move();
-
-		map.Draw();
-		player.Draw();
-		render.Flush(cam, UpdateCamera(&player, &cam, viewPort));
+		buttons[i].setSize((float)buttonSize.x, (float)buttonSize.y);
+		buttons[i].setPosition(windowSize.x / 2 - buttonSize.x / 2, 25 + (((windowSize.y - 50) / 2) - buttonSize.y / 2) * i);
 	}
 
+	bool stillPlaying = true;
+	Menu_Choice mc = MainMenu;
+	while (stillPlaying)
+	{
+		static bool Mouse_Left_Pressed_last_frame = false;
+		
+		if (mc == RunLevelEditor)
+		{
+			mainMenu->close();
+			delete mainMenu;
+			LevelEditorLoop();
+			mainMenu = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), "Text adventure");
+			mc = MainMenu;
+		}
+		else if (mc == RunGame)
+		{
+			mainMenu->close();
+			delete mainMenu;
+			GameLoop();
+			mainMenu = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), "Text adventure");
+			mc = MainMenu;
+			system("CLS");
+		}
 
+
+		sf::Event e;
+		while (mainMenu->pollEvent(e))
+		{
+			if (e.type == sf::Event::Closed)
+				mainMenu->close();
+		}
+		
+		bool mouseLeftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+
+		sf::Vector2i mp = sf::Mouse::getPosition(*mainMenu);
+		for (int i = 0; i < 3; i++)
+		{
+			buttons[i].setState(Button::Button_State::Standard);
+
+			if (buttons[i].PointIsInside((float)mp.x, (float)mp.y))
+			{
+				if (mouseLeftPressed)
+				{
+					buttons[i].setState(Button::Button_State::Press);
+				}
+				else
+				{
+					if (Mouse_Left_Pressed_last_frame)
+					{
+						switch (i)
+						{
+						case StartGame:
+							mc = RunGame;
+							break;
+						case StartLevelEditor:
+							mc = RunLevelEditor;
+							break;
+						case Exit:
+							stillPlaying = false;
+							break;
+						}
+					}
+					else
+					{
+						buttons[i].setState(Button::Button_State::Hover);	
+					}
+				}
+
+
+
+			}
+		}
+
+		Mouse_Left_Pressed_last_frame = mouseLeftPressed;
+
+
+
+		mainMenu->clear();
+		for (int i = 0; i < 3; i++)
+			mainMenu->draw(buttons[i]);
+		mainMenu->display();
+	}
+	delete mainMenu;
 	return 0;
 }
 
-void HandleInput(Player * player)
+void GameLoop()
 {
-	static bool MovedLastFrame = false;
-	static bool InteractedLastFrame = false;
-	static bool ToggledLastFrame = false;
-	static Timer moveTimer(true);
-
-	bool moveThisFrame = false;
-	bool interactedThisFrame = false;
-	bool ToggledThisFrame = false;
-
-	player->InteractRequest(interactedThisFrame);
-
-	Vec moveDir = { 0,0,0 };
-
-	if (GetAsyncKeyState('E'))
-		interactedThisFrame = true;
-	else if (GetAsyncKeyState('I'))
-		ToggledThisFrame = true;
-
-	if (interactedThisFrame && !InteractedLastFrame)
+	Game g;
+	Timer dt(true);
+	while (!GetAsyncKeyState(VK_ESCAPE))
 	{
-		if (player->isInsideInventory())
-			player->UseItem();
-		else
-			player->InteractRequest(true);
+		g.Update(dt.Stop());
+		g.Draw();
 	}
-	else if (ToggledThisFrame && !ToggledLastFrame)
-		player->ToggleInventoryDraw();
-
-	if (GetAsyncKeyState(VK_UP))
-	{
-		moveThisFrame = true;
-		moveDir.y = -1;
-	}
-	else if (GetAsyncKeyState(VK_DOWN))
-	{
-		moveDir.y = 1;
-		moveThisFrame = true;
-	}
-
-	if (GetAsyncKeyState(VK_RIGHT))
-	{
-		moveThisFrame = true;
-		moveDir.x = 1;
-	}
-	else if (GetAsyncKeyState(VK_LEFT))
-	{
-		moveDir.x = -1;
-		moveThisFrame = true;
-	}
-
-	if ((!MovedLastFrame || moveTimer.Peek() > 0.1 || player->isInsideInventory()) && moveThisFrame)
-	{
-		if (!player->isInsideInventory())
-		{
-			player->MoveRequest(moveDir);
-			moveTimer.Stop();
-		}
-		else
-		{
-			if (moveTimer.Peek() > 0.2 || !MovedLastFrame)
-			{
-				player->setSelectionDir(moveDir);
-				moveTimer.Stop();
-			}
-		}
-	}
-
-	MovedLastFrame = moveThisFrame;
-	InteractedLastFrame = interactedThisFrame;
-	ToggledLastFrame = ToggledThisFrame;
 }
 
-bool UpdateCamera(Character * c, Camera * cam, const Quad & viewPort)
+void LevelEditorLoop()
 {
-	bool redraw = false;
-	Vec pos = c->getPosition();
-	Vec camPos = cam->getPosition();
-
-	if (pos.x >= viewPort.width + camPos.x)
+	LevelEditor le;
+	Timer dt(true);
+	while (le.WinodwIsOpen())
 	{
-		redraw = true;
-		camPos.x += viewPort.width;
+		le.Update(dt.Stop());
+		le.Draw();
 	}
-	else if (pos.x < camPos.x)
-	{
-		redraw = true;
-		camPos.x -= viewPort.width;
-	}
-	if (pos.y >= viewPort.height + camPos.y)
-	{
-		redraw = true;
-		camPos.y += viewPort.height;
-	}
-	else if (pos.y < camPos.y)
-	{
-		redraw = true;
-		camPos.y -= viewPort.height;
-	}
-	cam->setPosition(camPos);
-	return redraw;
 }
-
