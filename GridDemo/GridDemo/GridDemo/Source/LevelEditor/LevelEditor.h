@@ -26,8 +26,9 @@ private:
 	sf::RectangleShape m_BottomPanel;
 
 	// Text
-	TextField m_fieldOne;
-
+	static const int NUMBER_OF_TEXT_FIELDS = 1;
+	TextField m_textFields[NUMBER_OF_TEXT_FIELDS];
+	int m_textFieldSelection;
 
 public:
 	LevelEditor();

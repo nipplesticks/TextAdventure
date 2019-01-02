@@ -22,30 +22,65 @@ TextField::TextField()
 	m_text.setFont(s_font);
 	m_text.setFillColor(sf::Color::Black);
 	m_drawAtBar = false;
+	m_selected = false;
 }
 
 void TextField::addChar(const char & c)
 {
 	m_currentText.insert(m_currentText.begin() + m_targetIndex++, c);
-
+	m_timer = 2.0f;
 	_updateTextAndPosition();
 }
 
-void TextField::RemoveChar()
+void TextField::RemoveChar(bool withDel)
 {
-	if (m_currentText.size() != 0 && m_targetIndex != 0)
+	if (m_currentText.size() != 0)
 	{
-		if (m_targetIndex == m_currentText.size())
+		m_timer = 2.0f;
+		if (withDel && m_currentText.size() != m_targetIndex)
 		{
-			m_currentText.pop_back();
-			m_targetIndex--;
+			m_currentText.erase(m_currentText.begin() + m_targetIndex);
 		}
-		else
+		else if (m_targetIndex != 0)
 		{
-			m_currentText.erase(m_currentText.begin() + m_targetIndex--);
+			if (m_targetIndex == m_currentText.size())
+			{
+				m_currentText.pop_back();
+				m_targetIndex--;
+			}
+			else
+			{
+				m_currentText.erase(m_currentText.begin() + --m_targetIndex);
+			}
 		}
 		_updateTextAndPosition();
 	}
+}
+
+void TextField::moveTarget(int dir)
+{
+	m_targetIndex += dir;
+
+	if (m_targetIndex < 0) m_targetIndex = 0;
+	if (m_targetIndex > m_currentText.size()) m_targetIndex = m_currentText.size();
+	m_timer = 2.0f;
+	_updateTextAndPosition();
+}
+
+bool TextField::isPointInside(float x, float y) const
+{
+	return x > m_background.getPosition().x && x < m_background.getPosition().x + m_background.getSize().x &&
+		y > m_background.getPosition().y && y < m_background.getPosition().y + m_background.getSize().y;
+}
+
+void TextField::setSelection(bool selectionState)
+{
+	m_selected = selectionState;
+}
+
+bool TextField::getSelectionState() const
+{
+	return m_selected;
 }
 
 void TextField::setPosition(float x, float y)
@@ -80,7 +115,7 @@ void TextField::Press(float x, float y)
 {
 	const sf::Vector2f & pos = m_background.getPosition();
 	const sf::Vector2f & size = m_background.getSize();
-	if (x > pos.x && x < pos.x + size.x && y > pos.y && y < pos.y + size.y)
+	if (isPointInside(x, y))
 	{
 		m_timer = 0.0f;
 		sf::FloatRect textPos = m_text.getGlobalBounds();
@@ -142,10 +177,12 @@ void TextField::Update(float dt)
 {
 	m_timer += dt;
 
-	if ((int)m_timer % 2 == 0)
+	if (m_selected && (int)m_timer % 2 == 0)
 		m_drawAtBar = true;
 	else
 		m_drawAtBar = false;
+
+
 	if (m_timer > 100.0f)
 		m_timer -= 100.0f;
 }

@@ -6,18 +6,28 @@ class TextField : public sf::Drawable
 private:
 	static sf::Font s_font;
 	static bool s_fontLoaded;
+
 	float m_offset = 0.0f;
+
 	sf::RectangleShape m_atBar;
 	bool m_drawAtBar;
+	bool m_selected;
+
 	sf::RectangleShape m_background;
 	std::string m_currentText;
 	sf::Text m_text;
+
 	float m_timer = 0.0f;
 	int m_targetIndex = 0;
 public:
 	TextField();
 	void addChar(const char &c);
-	void RemoveChar();
+	void RemoveChar(bool withDel = false);
+	void moveTarget(int dir);
+
+	bool isPointInside(float x, float y) const;
+	void setSelection(bool selectionState);
+	bool getSelectionState() const;
 
 	void setPosition(float x, float y);
 	void setSize(float x, float y);

@@ -19,14 +19,17 @@ LevelEditor::LevelEditor()
 
 	const sf::Vector2f & pos = m_RightPanel.getPosition();
 	const sf::Vector2f & size = m_RightPanel.getSize();
-	m_fieldOne.setPosition(pos.x + 5.0f, pos.y + 5.0f);
-	m_fieldOne.setSize(size.x - 10.0f, 25.0f);
-	m_fieldOne.setCharacterSize(16.0f);
+
+	m_textFields[0].setPosition(pos.x + 5.0f, pos.y + 5.0f);
+	m_textFields[0].setSize(size.x - 10.0f, 25.0f);
+	m_textFields[0].setCharacterSize(16.0f);
 	
-	m_fieldOne.addChar('T');
-	m_fieldOne.addChar('e');
-	m_fieldOne.addChar('s');
-	m_fieldOne.addChar('t');
+	m_textFields[0].addChar('T');
+	m_textFields[0].addChar('e');
+	m_textFields[0].addChar('s');
+	m_textFields[0].addChar('t');
+
+	m_textFieldSelection = -1;
 
 	m_BottomPanel.setPosition(0, m_camSize.y * m_pixelSize.y);
 
@@ -62,13 +65,17 @@ LevelEditor::LevelEditor()
 
 LevelEditor::~LevelEditor()
 {
+	delete m_window;
+	m_window = nullptr;
+	delete[] m_map;
+	m_map = nullptr;
 }
 
 bool LevelEditor::WinodwIsOpen()
 {
 	return m_window->isOpen();
 }
-
+#include <iostream>
 void LevelEditor::Update(float dt)
 {
 	sf::Event e;
@@ -76,9 +83,39 @@ void LevelEditor::Update(float dt)
 	{
 		if (e.type == sf::Event::Closed)
 			m_window->close();
+		else
+		{
+			if (m_textFieldSelection != -1)
+			{
+				if (e.type == sf::Event::TextEntered)
+				{
+					if (e.text.unicode > 31 && e.text.unicode < 128)
+						m_textFields[m_textFieldSelection].addChar(static_cast<char>(e.text.unicode));
+					else if (e.text.unicode == 8) // Back
+						m_textFields[m_textFieldSelection].RemoveChar();
+				}
+				else if (e.type != sf::Event::KeyReleased)
+				{
+					if (e.key.code == sf::Keyboard::Right)
+					{
+						m_textFields[m_textFieldSelection].moveTarget(1);
+					}
+					else if (e.key.code == sf::Keyboard::Left)
+					{
+						m_textFields[m_textFieldSelection].moveTarget(-1);
+					}
+					else if (e.key.code == sf::Keyboard::Delete)
+					{
+						m_textFields[m_textFieldSelection].RemoveChar(true);
+					}
+				}
+				
+			}
+		}
 	}
 
-	m_fieldOne.Update(dt);
+	for (int i = 0; i < NUMBER_OF_TEXT_FIELDS; i++) 
+		m_textFields[i].Update(dt);
 
 
 	_input();
@@ -103,21 +140,23 @@ void LevelEditor::Draw()
 
 	m_window->draw(m_BottomPanel);
 	m_window->draw(m_RightPanel);
-	m_window->draw(m_fieldOne);
+	m_window->draw(m_textFields[0]);
 	m_window->display();
 }
 
 void LevelEditor::_input()
 {
 	m_MouseThisFrame = sf::Mouse::getPosition(*m_window);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (m_textFieldSelection == -1 && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		_mapMove();
 	}
 	else
 	{
-		_handleKeyboardInput();
+		if (m_textFieldSelection == -1)
+			_handleKeyboardInput();
+		
+		
 		_handleMouseInput();
 	}
 
@@ -165,16 +204,14 @@ void LevelEditor::_handleKeyboardInput()
 		Right_now = true;
 	}
 
-
+	
 	if (Up_now && !Up_last)
 	{
-		//m_camPos.y -= m_camSize.y;
-		m_fieldOne.addChar('M');
+		m_camPos.y -= m_camSize.y;
 	}
 	else if (Down_now && !Down_last)
 	{
-		//m_camPos.y += m_camSize.y;
-		m_fieldOne.RemoveChar();
+		m_camPos.y += m_camSize.y;
 	}
 	if (Left_now && !Left_last)
 	{
@@ -199,7 +236,21 @@ void LevelEditor::_handleMouseInput()
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		m_fieldOne.Press(m_MouseThisFrame.x, m_MouseThisFrame.y);
+		m_textFieldSelection = -1;
+		for (int i = 0; i < NUMBER_OF_TEXT_FIELDS && m_textFieldSelection == -1; i++)
+		{
+			m_textFields[i].setSelection(false);
+			if (m_textFields[i].isPointInside(m_MouseThisFrame.x, m_MouseThisFrame.y))
+			{
+				m_textFieldSelection = i;
+				m_textFields[i].setSelection(true);
+			}
+		}
+		for (int i = m_textFieldSelection + 1; i < NUMBER_OF_TEXT_FIELDS; i++)
+		{
+			m_textFields[i].setSelection(false);
+		}
+		m_textFields[m_textFieldSelection].Press(m_MouseThisFrame.x, m_MouseThisFrame.y);
 	}
 
 
@@ -208,9 +259,6 @@ void LevelEditor::_handleMouseInput()
 	indexThisFame.y /= m_pixelSize.y;
 	indexThisFame.x += m_camPos.x;
 	indexThisFame.y += m_camPos.y;
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		int i = 0;
 
 	if (indexLastFrame.x >= 0 && indexLastFrame.y >= 0 &&
 		indexLastFrame.x < m_mapSize.x && indexLastFrame.y < m_mapSize.y)
