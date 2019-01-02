@@ -32,9 +32,17 @@ Button::~Button()
 
 }
 
-void Button::setText(const sf::String & text)
+void Button::setText(const sf::String & text, bool fitButtonSizeToText)
 {
 	m_text.setString(text);
+
+	if (fitButtonSizeToText)
+	{
+		sf::FloatRect rectangle = m_text.getGlobalBounds();
+		sf::Vector2f newSize = { rectangle.width + 5.0f, rectangle.height + 5.0f};
+		m_button.setSize(newSize);
+	}
+
 	_allign();
 }
 
@@ -64,6 +72,11 @@ void Button::setState(const Button_State & state)
 	}
 }
 
+void Button::setOutlineThickness(float size)
+{
+	m_button.setOutlineThickness(size);
+}
+
 void Button::setOutlineColor(const sf::Color & oCol)
 {
 	m_button.setOutlineColor(oCol);
@@ -87,6 +100,16 @@ const sf::Vector2f & Button::getSize() const
 const Button::Button_State & Button::getState() const
 {
 	return m_state;
+}
+
+void Button::setDataString(const std::string & data)
+{
+	m_data = data;
+}
+
+const std::string & Button::getDataString() const
+{
+	return m_data;
 }
 
 void Button::setTextSize(float size)

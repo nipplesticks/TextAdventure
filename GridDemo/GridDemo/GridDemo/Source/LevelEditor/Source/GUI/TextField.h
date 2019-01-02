@@ -19,15 +19,22 @@ private:
 
 	float m_timer = 0.0f;
 	int m_targetIndex = 0;
+
+	sf::RectangleShape m_selectionBar;
+	int m_startIndex = -1;
+	bool m_dragSelection = false;
+
 public:
 	TextField();
 	void addChar(const char &c);
 	void RemoveChar(bool withDel = false);
-	void moveTarget(int dir);
+	void moveTarget(int dir, bool shiftPressed = false);
 
 	bool isPointInside(float x, float y) const;
 	void setSelection(bool selectionState);
 	bool getSelectionState() const;
+
+	void BeginSelection();
 
 	void setPosition(float x, float y);
 	void setSize(float x, float y);
@@ -39,8 +46,11 @@ public:
 
 	void Update(float dt);
 
+
 	const std::string & getString() const;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+public:
+	static bool isValidKey(const sf::Uint32 & unicode);
 private:
 	void _updateTextAndPosition();
 };

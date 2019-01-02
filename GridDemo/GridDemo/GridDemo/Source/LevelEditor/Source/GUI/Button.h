@@ -20,16 +20,19 @@ private:
 	sf::Color m_colors[3];
 	sf::Text m_text;
 
+	std::string m_data = "";
 
 public:
 	Button();
 	~Button();
 
-	void setText(const sf::String & text);
+	void setText(const sf::String & text, bool fitButtonSizeToText = false);
 	void setViewPosition(float x, float y);
 	void setWorldPosition(float x, float y);
 	void setSize(float x, float y);
 	void setState(const Button_State & state);
+	void setOutlineThickness(float size);
+
 
 	void setOutlineColor(const sf::Color & oCol);
 
@@ -37,6 +40,9 @@ public:
 	const sf::Vector2f & getWorldPosition() const;
 	const sf::Vector2f & getSize() const;
 	const Button_State & getState() const;
+
+	void setDataString(const std::string & data);
+	const std::string & getDataString() const;
 
 	void setTextSize(float size);
 	void setTextColor(const sf::Color & tCol);

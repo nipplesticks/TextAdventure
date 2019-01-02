@@ -15,6 +15,8 @@ TextField::TextField()
 	m_background.setOutlineThickness(3.0f);
 	m_background.setOutlineColor(sf::Color::Black);
 
+	m_selectionBar.setFillColor(sf::Color::Blue);
+
 	m_atBar.setSize(sf::Vector2f(1.0f, 45.0f));
 	m_atBar.setPosition(3.0f, 2.5f);
 	m_atBar.setFillColor(sf::Color::Black);
@@ -27,7 +29,12 @@ TextField::TextField()
 
 void TextField::addChar(const char & c)
 {
+	if (m_startIndex != -1 && m_startIndex != m_targetIndex)
+		RemoveChar();
+
 	m_currentText.insert(m_currentText.begin() + m_targetIndex++, c);
+	m_startIndex = -1;
+
 	_updateTextAndPosition();
 }
 
@@ -35,32 +42,49 @@ void TextField::RemoveChar(bool withDel)
 {
 	if (m_currentText.size() != 0)
 	{
-		if (withDel && m_currentText.size() != m_targetIndex)
+		if (m_startIndex != -1 && m_startIndex != m_targetIndex)
 		{
-			m_currentText.erase(m_currentText.begin() + m_targetIndex);
+			int first, last;
+			first = std::min(m_startIndex, m_targetIndex);
+			last = std::max(m_startIndex, m_targetIndex);
+			m_currentText.erase(m_currentText.begin() + first, m_currentText.begin() + last);
+			m_targetIndex = first;
+			m_startIndex = -1;
 		}
-		else if (m_targetIndex != 0)
+		else
 		{
-			if (m_targetIndex == m_currentText.size())
+			if (withDel && m_currentText.size() != m_targetIndex)
 			{
-				m_currentText.pop_back();
-				m_targetIndex--;
+				m_currentText.erase(m_currentText.begin() + m_targetIndex);
 			}
-			else
+			else if (m_targetIndex != 0)
 			{
-				m_currentText.erase(m_currentText.begin() + --m_targetIndex);
+				if (m_targetIndex == m_currentText.size())
+				{
+					m_currentText.pop_back();
+					m_targetIndex--;
+				}
+				else
+				{
+					m_currentText.erase(m_currentText.begin() + --m_targetIndex);
+				}
 			}
 		}
+
 		_updateTextAndPosition();
 	}
 }
 
-void TextField::moveTarget(int dir)
+void TextField::moveTarget(int dir, bool shiftPressed)
 {
 	m_targetIndex += dir;
 
 	if (m_targetIndex < 0) m_targetIndex = 0;
 	if (m_targetIndex > m_currentText.size()) m_targetIndex = m_currentText.size();
+
+	if (!shiftPressed)
+		m_startIndex = -1;
+
 	_updateTextAndPosition();
 }
 
@@ -78,6 +102,11 @@ void TextField::setSelection(bool selectionState)
 bool TextField::getSelectionState() const
 {
 	return m_selected;
+}
+
+void TextField::BeginSelection()
+{
+	m_startIndex = m_targetIndex;
 }
 
 void TextField::setPosition(float x, float y)
@@ -189,9 +218,19 @@ const std::string & TextField::getString() const
 void TextField::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(m_background, states);
+	if (m_startIndex != -1 && m_startIndex != m_targetIndex)
+		target.draw(m_selectionBar);
 	target.draw(m_text, states);
 	if (m_drawAtBar)
 		target.draw(m_atBar, states);
+}
+
+bool TextField::isValidKey(const sf::Uint32 & unicode)
+{
+	return (unicode > 31 && unicode < 128) ||
+		unicode == 229 || unicode == 197 ||
+		unicode == 228 || unicode == 196 ||
+		unicode == 246 || unicode == 214;
 }
 
 void TextField::_updateTextAndPosition()
@@ -218,4 +257,14 @@ void TextField::_updateTextAndPosition()
 	tmp.setString(sub);
 	m_offset = tmp.getGlobalBounds().width + 2.0f;
 	m_atBar.setPosition(atBarPos.x + m_offset, atBarPos.y);
+
+	if (m_startIndex != -1 && m_startIndex != m_targetIndex)
+	{
+		sub = m_currentText.substr(0, m_startIndex);
+		tmp.setString(sub);
+		float offset = tmp.getGlobalBounds().width + 2.0f;
+		m_selectionBar.setPosition(pos.x + offset, pos.y);
+		float length = m_atBar.getPosition().x - m_selectionBar.getPosition().x;
+		m_selectionBar.setSize(sf::Vector2f(length, size.y));
+	}
 }
