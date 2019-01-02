@@ -28,7 +28,6 @@ TextField::TextField()
 void TextField::addChar(const char & c)
 {
 	m_currentText.insert(m_currentText.begin() + m_targetIndex++, c);
-	m_timer = 2.0f;
 	_updateTextAndPosition();
 }
 
@@ -36,7 +35,6 @@ void TextField::RemoveChar(bool withDel)
 {
 	if (m_currentText.size() != 0)
 	{
-		m_timer = 2.0f;
 		if (withDel && m_currentText.size() != m_targetIndex)
 		{
 			m_currentText.erase(m_currentText.begin() + m_targetIndex);
@@ -63,7 +61,6 @@ void TextField::moveTarget(int dir)
 
 	if (m_targetIndex < 0) m_targetIndex = 0;
 	if (m_targetIndex > m_currentText.size()) m_targetIndex = m_currentText.size();
-	m_timer = 2.0f;
 	_updateTextAndPosition();
 }
 
@@ -117,7 +114,6 @@ void TextField::Press(float x, float y)
 	const sf::Vector2f & size = m_background.getSize();
 	if (isPointInside(x, y))
 	{
-		m_timer = 0.0f;
 		sf::FloatRect textPos = m_text.getGlobalBounds();
 		if (x < textPos.left + 5.0f)
 		{
@@ -175,16 +171,14 @@ void TextField::Press(float x, float y)
 
 void TextField::Update(float dt)
 {
-	m_timer += dt;
+	m_timer += dt * 2;
+	if (m_timer > 2.0f)
+		m_timer -= 2.0f;
 
 	if (m_selected && (int)m_timer % 2 == 0)
 		m_drawAtBar = true;
 	else
 		m_drawAtBar = false;
-
-
-	if (m_timer > 100.0f)
-		m_timer -= 100.0f;
 }
 
 const std::string & TextField::getString() const
@@ -202,6 +196,7 @@ void TextField::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 void TextField::_updateTextAndPosition()
 {
+	m_timer = 0.0f;
 	sf::FloatRect beforeBox = m_text.getLocalBounds();
 	m_text.setString(m_currentText);
 	sf::FloatRect tBox = m_text.getLocalBounds();
@@ -211,7 +206,7 @@ void TextField::_updateTextAndPosition()
 	sf::Vector2f origin = { 0, tBox.height - tBox.top * 0.5f };
 	m_text.setOrigin(origin);
 	m_text.setPosition(pos.x + 1.0f, pos.y + size.y * 0.5f);
-	m_atBar.setSize(sf::Vector2f(3, size.y * 0.9f));
+	m_atBar.setSize(sf::Vector2f(1.0f, size.y * 0.9f));
 	m_atBar.setPosition(pos.x, pos.y * 1.1f);
 	const sf::Vector2f & atBarPos = m_atBar.getPosition();
 	m_offset += tBox.width - beforeBox.width;
@@ -221,6 +216,6 @@ void TextField::_updateTextAndPosition()
 	tmp.setCharacterSize(m_text.getCharacterSize());
 	std::string sub = m_currentText.substr(0, m_targetIndex);
 	tmp.setString(sub);
-	m_offset = tmp.getGlobalBounds().width;
+	m_offset = tmp.getGlobalBounds().width + 2.0f;
 	m_atBar.setPosition(atBarPos.x + m_offset, atBarPos.y);
 }

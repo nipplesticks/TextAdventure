@@ -89,10 +89,16 @@ void LevelEditor::Update(float dt)
 			{
 				if (e.type == sf::Event::TextEntered)
 				{
+					
 					if (e.text.unicode > 31 && e.text.unicode < 128)
 						m_textFields[m_textFieldSelection].addChar(static_cast<char>(e.text.unicode));
 					else if (e.text.unicode == 8) // Back
 						m_textFields[m_textFieldSelection].RemoveChar();
+					else if (e.key.code == 229 || e.key.code == 197 || e.key.code == 228 || e.key.code == 196 || e.key.code == 246 || e.key.code == 214)
+					{
+						m_textFields[m_textFieldSelection].addChar(static_cast<char>(e.text.unicode));
+					}
+					
 				}
 				else if (e.type != sf::Event::KeyReleased)
 				{
@@ -108,8 +114,7 @@ void LevelEditor::Update(float dt)
 					{
 						m_textFields[m_textFieldSelection].RemoveChar(true);
 					}
-				}
-				
+				}	
 			}
 		}
 	}
